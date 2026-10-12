@@ -1,0 +1,21 @@
+import { createServer } from "node:http";
+import { RpcProvider, hash, num } from "starknet";
+import crypto from "node:crypto";
+console.log("hashes with keccak/sha3:", crypto.getHashes().filter((h) => /keccak|sha3/i.test(h)).join(","));
+let kk; try { kk = crypto.createHash("KECCAK-256").update("Transfer").digest("hex"); } catch (e) { kk = "ERR " + e.message; }
+console.log("node keccak-256(Transfer):", kk);
+console.log("selector Transfer:", hash.getSelectorFromName("Transfer"));
+console.log("selector balance_of:", hash.getSelectorFromName("balance_of"));
+console.log("selector balanceOf:", hash.getSelectorFromName("balanceOf"));
+console.log("selector decimals:", hash.getSelectorFromName("decimals"), "symbol:", hash.getSelectorFromName("symbol"));
+const seen = [];
+const s = createServer((req, res) => { let b = ""; req.on("data", (d) => (b += d)); req.on("end", () => { const m = JSON.parse(b); seen.push(m);
+  const r = { starknet_call: ["0x1", "0x0"], starknet_getEvents: { events: [], continuation_token: undefined }, starknet_getTransactionReceipt: null, starknet_specVersion: "0.10.0" }[m.method];
+  res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify({ jsonrpc: "2.0", id: m.id, result: r ?? null })); }); });
+await new Promise((r) => s.listen(0, "127.0.0.1", r));
+const p = new RpcProvider({ nodeUrl: `http://127.0.0.1:${s.address().port}` });
+await p.callContract({ contractAddress: "0x123", entrypoint: "balance_of", calldata: ["0x456"] }, "latest");
+await p.getEvents({ from_block: { block_number: 10 }, to_block: "latest", address: "0x123", keys: [[hash.getSelectorFromName("Transfer")]], chunk_size: 100 });
+for (const m of seen) console.log(JSON.stringify(m));
+console.log("starknet.js default spec:", p.channel?.specVersion ?? "?", "headers:", JSON.stringify(p.channel?.headers ?? {}));
+process.exit(0);

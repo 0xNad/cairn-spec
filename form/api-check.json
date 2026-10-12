@@ -1,0 +1,104 @@
+{
+  "status": 200,
+  "body": {
+    "ok": true,
+    "data": {
+      "checked": "the file sent",
+      "project": {
+        "title": "Cairn",
+        "pitch": "Cairn is an open-source Telegram bot for Starknet that anyone can host. It answers balance and transaction lookups in chat, alerts you when a watched wallet moves funds or grants an approval, posts a project group's token buys and whale moves with USD values and .stark names, and warns everyone when the chain stalls or reorganises. It only reads the chain, over any JSON-RPC 0.10 node: it never holds a key, never signs, has no Mini App, and runs as one Node.js 24 process with no dependencies.",
+        "repo": "0xNad/cairn"
+      },
+      "settings": {
+        "payout": {
+          "kind": "places",
+          "shares": [
+            6000,
+            2500,
+            1500
+          ],
+          "houseFirstRolls": false
+        },
+        "pick": {
+          "kind": "creator-in-judging"
+        },
+        "hours": {
+          "build": 48,
+          "reveal": 12,
+          "rank": 12
+        },
+        "opensAt": null,
+        "rankers": []
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "title": "Lookups",
+          "prize": "9,000,000",
+          "criteria": [
+            "Usefulness of replies (counts double): /status, /balance and /tx tell a Starknet user what they need at a glance, with exact amounts and working links, in a private chat and in a busy group",
+            "Robustness: every bad input, flaky node and Telegram error gets a reason a user or an operator can act on, and nothing crashes",
+            "Security posture: secrets, hosts and data are handled as the brief says, including where the checks cannot see",
+            "Code quality: small, readable modules with no dependency, ready for round 2's block scanner and delivery ledger"
+          ],
+          "template": null,
+          "briefCharacters": 7198,
+          "howToRun": true
+        },
+        {
+          "round": 2,
+          "title": "Wallet alerts",
+          "prize": "9,000,000",
+          "criteria": [
+            "Alert quality (counts double): an alert says what moved, how much, between whom and where to check; no dust or fee noise, and a busy wallet does not bury the reader",
+            "Delivery correctness: no lost alerts and no duplicates, through restarts, kills, node outages and paging",
+            "Admin control and privacy: group setup is obvious and members cannot change it; only what the brief allows is stored; /export is complete and /forget leaves nothing",
+            "Code quality: round 1 reused, not copied, with a scanner and a ledger ready for round 3's swap decoders"
+          ],
+          "template": null,
+          "briefCharacters": 3694,
+          "howToRun": true
+        },
+        {
+          "round": 3,
+          "title": "Group feeds, prices and names",
+          "prize": "9,000,000",
+          "criteria": [
+            "Group fit (counts double): a post reads at a glance on a phone, scales with trade size, and bursts never flood the group",
+            "Decoding accuracy: buys, sells, aggregator routes, multi-hop routes and round trips are counted as the brief defines, and amounts and USD values match the chain",
+            "Names and prices: they appear where they help, are never wrong, and stay quiet when unknown",
+            "Code quality: the decoders sit on round 2's scanner and ledger"
+          ],
+          "template": null,
+          "briefCharacters": 2649,
+          "howToRun": true
+        },
+        {
+          "round": 4,
+          "title": "Network guard and operations",
+          "prize": "8,000,000",
+          "criteria": [
+            "Trustworthiness under failure (counts double): stalls, reorgs and dead endpoints are each reported once and accurately, and alerts are corrected when the chain changes its mind",
+            "Operability: health, metrics, failover and the deploy guide let a community member run it unattended",
+            "Member safety: the guards catch seed phrases and listed links with no false alarms, and never repeat what they protect",
+            "Code quality: earlier rounds reused; one loop, not four"
+          ],
+          "template": null,
+          "briefCharacters": 2371,
+          "howToRun": true
+        }
+      ],
+      "round1": {
+        "ready": false,
+        "missing": [
+          "main has no .launchpad/checks/round-1/check.json yet, so round 1 cannot open: commit it with the files it runs."
+        ],
+        "notes": [
+          "main is not protected: protect it before round 1 opens, so that no entrant with write access merges their own entry (http://127.0.0.1:61187/docs/writing-checks#protect-the-default-branch)."
+        ]
+      },
+      "notes": [],
+      "launchUrl": "http://127.0.0.1:61187/projects/new?from=0xNad/cairn"
+    }
+  }
+}

@@ -1,0 +1,2 @@
+{ "name": "tgprobe", "private": true, "type": "module",
+  "dependencies": { "grammy": "1.46.0", "starknet": "10.8.0", "better-sqlite3": "13.0.3" } }

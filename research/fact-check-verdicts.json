@@ -1,0 +1,744 @@
+[
+ {
+  "group": "bots",
+  "verdict": {
+   "checked": [
+    {
+     "claim": "[trading] DefiLlama 30d to 2026-10-11: 'Telegram Bot' category excl. Pump.fun Terminal ~$2.6M fees vs 'Trading App' ~$92.6M",
+     "verdict": "confirmed",
+     "correction": "Recomputed 2026-10-12: Telegram Bot total $8.13M minus Terminal $5.55M = $2.58M; Trading App $92.61M (Axiom $37.3M, GMGN $27.4M, fomo Wallet $24.3M, Propr $1.6M, Photon $0.36M). Confidence high.",
+     "source": "https://api.llama.fi/overview/fees?dataType=dailyFees (pulled 2026-10-12)"
+    },
+    {
+     "claim": "[trading] Axiom fees $546.7M (2025), $223.5M (2026 YTD), $770.2M all-time; GMGN $137.0M/$177.5M; Trojan $126.8M (2024) -> $87.3M (2025) -> $13.9M (2026 YTD)",
+     "verdict": "confirmed",
+     "correction": "Recomputed from daily series through 2026-10-11: Axiom 546.71/223.52/770.23M; GMGN 137.01/177.52M; Trojan 126.81/87.26/13.90M. Confidence high.",
+     "source": "https://api.llama.fi/summary/fees/axiom ; /gmgn ; /trojan"
+    },
+    {
+     "claim": "[trading] Maestro: 1% on every buy/sell (in-tx on Solana, accrued elsewhere), Premium $200/mo, 25% lifetime referral, 15-30% cashback, 12 chains incl. Monad, HyperEVM, Robinhood, Tron, TON",
+     "verdict": "confirmed",
+     "correction": "All verified in docs: 1% fee, $200/month Premium, 'up to 25% lifetime commission' (sticky referral; split 50/50 for already-referred users), cashback tiers 15/20/25/30%, twelve chains listed. Confidence high.",
+     "source": "https://docs.maestrobots.com/sniper/monetization ; https://docs.maestrobots.com/sniper/premium-subscription ; https://docs.maestrobots.com/sniper/faq/supported-chains-and-dexs ; https://docs.maestrobots.com/llms-full.txt"
+    },
+    {
+     "claim": "[trading] Trojan: 1% per trade, up to 45% cashback, ~50% referral over 5 layers, jackpot from 10% of fees; Terminal has limit, DCA, copy trading, auto-sell, Jito MEV protection, Hyperliquid perps",
+     "verdict": "confirmed",
+     "correction": "Docs: 'Trojan charges 1% per successful trade', up to 45% cashback, referral 'up to 50%', '5-Layers Deep', jackpot = 10% of daily fees; Perps page 'powered by Hyperliquid'; Jito via MEV protection. Note docs inconsistently describe jackpot as daily vs every two days. Confidence high.",
+     "source": "https://docs.trojan.com/llms-full.txt (fetched 2026-10-12)"
+    },
+    {
+     "claim": "[trading] Banana Gun fees 0.5% manual/limit on ETH, 1% ETH snipes, 1% other chains; 40% of revenue after referrals to holders (min 50 BANANA); homepage 26M+ trades, $16B+ volume, 1.5M+ users",
+     "verdict": "confirmed",
+     "correction": "Docs: 'Manual buys and limit orders on Ethereum = 0.5%, Autosniper on Ethereum = 1%, Trades on other chains = 1%'; '40% after referrals'; '50 $BANANA' minimum. Homepage: 26M+ trades, $16B+ volume, 1.5M+ users (self-reported, undated). Confidence high.",
+     "source": "https://docs.bananagun.io/llms-full.txt ; https://docs.bananagun.io/banana-token/rewards ; https://bananagun.io"
+    },
+    {
+     "claim": "[trading] Banana Gun DefiLlama fees fell from ~$1.6M/month (Oct 2025) to under $10k/month by mid-2026; $0.6M in 2026 YTD",
+     "verdict": "corrected",
+     "correction": "Oct 2025 $1.63M and 2026 YTD $0.63M are right, but June 2026 was still ~$25.0k; monthly fees went under $10k only from July 2026 ($9.0k), with Aug $10.95k and Sep $5.9k. 30d fees to 2026-10-11 = $4.2k. Banana Pro web capture unverified. Confidence high on figures.",
+     "source": "https://api.llama.fi/summary/fees/banana-gun (pulled 2026-10-12)"
+    },
+    {
+     "claim": "[trading] Maestro Router2 exploit 2023-10-24/25: 280+ ETH (~$500K) via arbitrary calls; logic replaced in ~30 min; 610 ETH refunded from revenue within ~10h, verified by CertiK",
+     "verdict": "confirmed",
+     "correction": "The Block: 280+ ETH (~$500K), arbitrary calls enabling transferFrom, Router2 logic swapped ~30 min after discovery. Decrypt: 610 ETH (~$1.1M) refunded from own revenue ~10 hours after exploit; CertiK confirmed Router2 safety. Confidence high.",
+     "source": "https://www.theblock.co/news/ecosystems/2023-10-25-maestro-telegram-bot-suffers-a-contract-exploit-500000-of-eth-stolen-259338 ; https://decrypt.co/204444/maestro-trading-bot-refunds-610-eth-to-users-following-router-exploit"
+    },
+    {
+     "claim": "[trading] Unibot router exploit 2023-10-31: ~$580-640K stolen via router deployed days earlier; Unibot paused router, revoked approvals, refunded at ~$1.78M; UNIBOT fell 33%",
+     "verdict": "corrected",
+     "correction": "Amounts, 2023-10-28 router deployment (3 days earlier), pause, ~$1.78M buyback-based compensation and 33% token drop confirmed. Approvals are revoked by users, not Unibot: Revoke.cash says Unibot covered gas for users who could not afford revocation. Confidence high.",
+     "source": "https://www.theblock.co/news/regulation/2023-10-31-unibot-confirms-exploit-and-promises-compensation-as-token-price-plunges-260133 ; https://revoke.cash/exploits/unibot"
+    },
+    {
+     "claim": "[trading] Banana Gun exploit 2024-09-19: Telegram message-oracle flaw, ~$3M from 11 users (early reports 563 ETH); refunded from treasury with no token sales; added 2h transfer delay, 2FA, audits",
+     "verdict": "confirmed",
+     "correction": "The Block confirms date, oracle cause, $3M, 11 users, treasury refund with no token sales, 2-hour delay, transfer 2FA, back-end/front-end audits. The '563 ETH' early figure was not in this source and is unverified. Confidence high (core), low (563 ETH).",
+     "source": "https://www.theblock.co/news/ecosystems/2024-09-25-banana-gun-exploit-refund-318074"
+    },
+    {
+     "claim": "[trading] DEXX (2024-11-16) lost $21M+ via private key leak, 900+ victims (SlowMist); pledged 80% of daily revenue to compensation",
+     "verdict": "corrected",
+     "correction": "Date, $21M, key leak and 80% daily-revenue pledge confirmed. The cited source says over 12,000 unique Solana wallets/users were affected (MistTrack identified it; SlowMist assisted), not 900+. The 900+ figure is unverified. Confidence moderate.",
+     "source": "https://mpost.io/dexx-commits-to-compensating-users-for-losses-following-21m-hack"
+    },
+    {
+     "claim": "[trading] Axiom 3.5% -> 42.2% of Solana bot volume by 2025-04-09 (Photon 20.4%, BullX 11.3%, Trojan 5.4%); by 2026-08-24 fomo 46% of Solana trading-platform spot volume, Axiom <30%",
+     "verdict": "confirmed",
+     "correction": "PANews/Dune (data 2025-04-10): Axiom 3.5%->42.2%, Photon 20.4% (from 31.8%), BullX 11.3% (from 27.5%), Trojan 5.4%. Solana Compass citing Blockworks (2026-08-24): fomo 46%, Axiom below 30%; fomo overtook Axiom on 2026-08-06. Confidence moderate (secondary sources).",
+     "source": "https://www.techflowpost.com/en-US/article/24953 ; https://solanacompass.com/news/fomo-captures-46-of-solana-trading-platform-spot-volume-as-weekly-revenue"
+    },
+    {
+     "claim": "[trading] BullX suspended trading 2026-06-01 keeping wallet/withdrawals; Pump.fun acquired Padre 2025-10-24 and ended PADRE token utility",
+     "verdict": "confirmed",
+     "correction": "BullX suspension 2026-06-01 with wallet/withdrawal functions kept, and Pump.fun's Padre acquisition (Cointelegraph 2025-10-24, undisclosed amount) are confirmed. The Cointelegraph article does not mention the PADRE token; 'ended utility' is unverified. Confidence moderate.",
+     "source": "https://phemex.com/news/article/bullx-suspends-trading-functionality-to-focus-on-future-development-87410 ; https://cointelegraph.com/news/pumpfun-acquires-padre-trading-terminal-solana-memecoins"
+    },
+    {
+     "claim": "[trading] fomo raised $75M Series B led by Index at $550M valuation on 2026-06-22, after 625K+ traders and ~$4B volume in first year",
+     "verdict": "corrected",
+     "correction": "Round size, Series B, Index lead, $550M valuation and 2026-06-22 date confirmed (USV and others participated). Fortune does not give 625K+ traders or $4B first-year volume; it cites ~3,500 new users per day. Treat traction figures as unverified. Confidence high (round), low (traction).",
+     "source": "https://www.fortune.com/2026/06/22/fomo-series-b-fundraise-index-ventures-union-square-ventures/"
+    },
+    {
+     "claim": "[trading] avnu swap SDK/API supports integrator fees in bps to an on-chain recipient (100n = 1%), gasless/gasfree paymaster, and a DCA API",
+     "verdict": "confirmed",
+     "correction": "Docs: 'Fee in basis points as bigint (10n = 0.1%, 100n = 1%)', integratorFeeRecipient; paymaster gasfree (sponsor, API key) and gasless (pay gas in USDC/USDT); DCA API endpoints create/get/cancel order exist. Confidence high.",
+     "source": "https://docs.avnu.fi/docs/swap/add-fees ; https://docs.avnu.fi/docs/paymaster/index ; https://docs.avnu.fi/llms.txt"
+    },
+    {
+     "claim": "[trading] Starknet 30d DEX volume to 2026-10-11 ~$472.7M (Ekubo ~$466.5M) vs Solana ~$71.5B, Base ~$29.2B, BSC ~$28.3B",
+     "verdict": "confirmed",
+     "correction": "Pulled 2026-10-12: Starknet $472.74M (Ekubo $466.52M, Nostra Pools $6.22M); Solana $71.47B; Base $29.24B; BSC $28.34B. Confidence high.",
+     "source": "https://api.llama.fi/overview/dexs/starknet ; /solana ; /base ; /bsc"
+    },
+    {
+     "claim": "[tracking] Cielo plans Free/Pro $59/Whale $199 with listed wallet, bot and alert limits; FAQ says prices are annual basis",
+     "verdict": "confirmed",
+     "correction": "Homepage matches exactly (250 EVM/50 SOL, 1 TG+1 Discord, 120 alerts/hr; Pro 1,000/200, 4 TG bots incl. 2 private, 1K/hr; Whale 10,000/1,000, 18 TG bots incl. 9 private, 3K/hr; FAQ says Whale unlocks API; '$59 per month and ... $199 per month on an annual basis'). Confidence high.",
+     "source": "https://cielo.finance/ (fetched 2026-10-12)"
+    },
+    {
+     "claim": "[tracking] Cielo self-reports 500,000 users and 4M wallets across 30+ chains; documented chain list lacks Starknet",
+     "verdict": "confirmed",
+     "correction": "Homepage shows '4m Wallets Tracked', '30+ Chains', '500,000 Cielo users' (undated, footer (c) 2025). Docs chain-support page names Ethereum, Base, Solana, Robinhood, HyperEVM, BNB plus unspecified 'Other chains'; 'Starknet' appears 0 times in full docs, so absence is likely but the full chain list is not enumerated. Confidence moderate.",
+     "source": "https://cielo.finance/ ; https://docs.cielo.finance/chain-support.md ; https://docs.cielo.finance/llms-full.txt"
+    },
+    {
+     "claim": "[tracking] Nansen Pro $49/mo annual or $69/mo monthly, unlimited Smart Alerts; Free one active alert; pricing launched 2025-09-25",
+     "verdict": "confirmed",
+     "correction": "Prices and alert limits confirmed. Launch date 2025-09-25 is unverifiable: the cited 'new-pricing-explained' URL now redirects to the academy home page. Confidence high (prices), unknown (date).",
+     "source": "https://academy.nansen.ai/articles/9412804-about-nansen-pro"
+    },
+    {
+     "claim": "[tracking] Nansen Smart Alert latency: <5s Base/BNB/Ethereum, 10-20s Solana, 30-60s ~16 other chains, 1-2 min Tron; no Starknet",
+     "verdict": "corrected",
+     "correction": "Table lists 17 chains at 30-60s (HyperEVM, Arbitrum, Avalanche, Injective, IotaEVM*, Linea, Mantle, Mantra*, Monad, Near, Optimism, Plasma, Polygon, Robinhood, Sei, Sonic, Sui; * = provisional). Other values and Starknet absence confirmed. Confidence high.",
+     "source": "https://academy.nansen.ai/articles/6239622-ai-smart-alerts-101"
+    },
+    {
+     "claim": "[tracking] Nansen Smart Alerts API delivers to Telegram (DM/group), Discord, Slack, and HMAC-SHA256-signed webhooks (X-Nansen-Signature)",
+     "verdict": "confirmed",
+     "correction": "Docs: Telegram chats/groups, Slack and Discord webhooks, custom HTTPS webhook; optional secret signs body with HMAC-SHA256 in X-Nansen-Signature: sha256=<hex>; unsigned if no secret. Confidence high.",
+     "source": "https://docs.nansen.ai/api/smart-alerts"
+    },
+    {
+     "claim": "[tracking] Arkham alerts launched 2023-01-18; Telegram bot/mini-app @arkham_official_bot on 2025-05-28; 200M+ alerts, 2.1B labels, 700k entities; delivery email/Telegram/webhooks",
+     "verdict": "confirmed",
+     "correction": "Announcement dated 2025-05-28 confirms handle, 200M+ Telegram alerts since Jan 2023, 2.1B labelled addresses, 700,000 entities; codex lists email, Telegram, webhooks. Exact day 2023-01-18 not verified (only 'January 2023'). Confidence high.",
+     "source": "https://info.arkm.com/announcements/arkham-telegram-mini-app ; https://codex.arkm.com/the-platform/alerts ; https://t.me/arkham_official_bot"
+    },
+    {
+     "claim": "[tracking] Arkham June 2025 chain list: 18 chains, no Starknet; TON removed April 8 (2026?); HyperEVM live 2026-04-28",
+     "verdict": "confirmed",
+     "correction": "Codex list 'as of June 2025' has 18 chains incl. TON, no Starknet; HyperEVM announcement dated 2026-04-28. TON removal 'effective April 8 at 12pm EST' confirmed but the year could not be verified (The Defiant page blocked by Cloudflare; Arkham announcements index has no TON post). Confidence moderate.",
+     "source": "https://codex.arkm.com/the-platform/multichain-support ; https://info.arkm.com/announcements/hyperevm-is-now-on-arkham ; https://thedefiant.io/news/blockchains/arkham-intel-removes-ton-blockchain-support-7zj7n9"
+    },
+    {
+     "claim": "[tracking] Whale Alert TG 298,501 subscribers; Custom alerts $14.95/mo (web/iOS/Android, 1,000/day); Alerts API $29.95/mo, 100/hr, $100k min, 14 chains",
+     "verdict": "confirmed",
+     "correction": "t.me shows '298 501 subscribers' (2026-10-12). Site and developer page match all figures; Enterprise API $699/mo. Confidence high.",
+     "source": "https://t.me/whale_alert_io ; https://whale-alert.io/ ; https://developer.whale-alert.io/"
+    },
+    {
+     "claim": "[tracking] DeFi Saver @DeFiSaverBot covers Mainnet, Base, Arbitrum, Optimism with ratio, Liquity debt-in-front, automation, Aave v3 supply-cap monitors; channels in-app, email, Blockscan Chat, Telegram",
+     "verdict": "confirmed",
+     "correction": "Both help pages match. Confidence high.",
+     "source": "https://help.defisaver.com/features/notify/telegram-bot-for-monitoring-your-position ; https://help.defisaver.com/features/notify/notification-monitors"
+    },
+    {
+     "claim": "[tracking] Otomato raised $2M from Improbable 2026-05-26; 2,000+ users, 1,500+ active; Dec 2025 campaign converted 81.6% of 3,690 users to TG bot users",
+     "verdict": "confirmed",
+     "correction": "Improbable post matches all figures (campaign was HyperEVM-themed, zero paid promotion). Self-reported. Confidence high.",
+     "source": "https://www.improbable.io/news/improbable-invests-2m-in-otomato-to-scale-the-first-portfolio-aware-intelligence-layer-for-defi"
+    },
+    {
+     "claim": "[tracking] ConsenSys acquired HAL 2023-02-21; hal.xyz does not resolve 2026-10-12; no sunset date found",
+     "verdict": "confirmed",
+     "correction": "ConsenSys post dated 2023-02-21 (channels: email, Discord, Slack, Telegram, Twitter). DNS lookup for hal.xyz, www and app subdomains failed on 2026-10-12. Confidence moderate.",
+     "source": "https://consensys.com/blog/consensys-acquires-hal-to-augment-infuras-blockchain-notification-and-automation-capabilities"
+    },
+    {
+     "claim": "[tracking] Telegram bot limits ~1 msg/s per chat, 20/min per group, ~30/s broadcast; paid broadcasts 1,000/s at 0.1 Stars/msg, need 100k Stars + 100k MAU",
+     "verdict": "confirmed",
+     "correction": "FAQ matches. Nuance: 0.1 Stars is charged only per message above the free 30/s, and only for successful sends. Confidence high.",
+     "source": "https://core.telegram.org/bots/faq"
+    },
+    {
+     "claim": "[tracking] Zerion address alerts (2023-03-23) push only; API webhooks EVM+Solana, 5 wallets/subscription free, 3 retries ~20s apart, spam flagged not filtered",
+     "verdict": "confirmed",
+     "correction": "Blog 2023-03-23 describes phone push only, no Telegram; webhook docs match (flags.is_trash; 4xx stops retries). Confidence high.",
+     "source": "https://zerion.io/blog/multichain-notifications/ ; https://developers.zerion.io/webhooks"
+    },
+    {
+     "claim": "[tracking] Etherscan watch list email-only, 50 addresses/account; no official Etherscan Telegram alert bot",
+     "verdict": "confirmed",
+     "correction": "KB confirms email notifications and 50-address limit. Absence of an official Telegram bot is a negative claim (not provable). Confidence moderate.",
+     "source": "https://kbadm.etherscan.com/watch-list/"
+    },
+    {
+     "claim": "[tracking] Lookonchain TG channel 18,786 subscribers, group 36,810 members (2026-10-12)",
+     "verdict": "confirmed",
+     "correction": "t.me/lookonchainchannel '18 786 subscribers'; t.me/lookonchain '36 810 members' (members label = group). Confidence high.",
+     "source": "https://t.me/lookonchainchannel ; https://t.me/lookonchain"
+    },
+    {
+     "claim": "[community] Bot API 10.1 (2026-06-11) join request queries: guard bot gets query_id, must call sendChatJoinRequestWebApp or answerChatJoinRequestQuery (approve/decline/queue) within 10s",
+     "verdict": "confirmed",
+     "correction": "Changelog 2026-06-11 lists query_id, guard_bot, both methods; API reference: result 'approve', 'decline' or 'queue'; 'must call ... within 10 seconds'. Confidence high.",
+     "source": "https://core.telegram.org/bots/api-changelog ; https://core.telegram.org/bots/api"
+    },
+    {
+     "claim": "[community] Bot API 10.2 (2026-07-14) ephemeral group messages + Communities; Mini App cross-origin hardening auto-on 2026-07-20; 10.0 (2026-05-08) guest mode; 9.6 (2026-04-03) managed bots",
+     "verdict": "confirmed",
+     "correction": "All dates and features match the changelog; hardening can be opted out via @BotFather. Confidence high.",
+     "source": "https://core.telegram.org/bots/api-changelog"
+    },
+    {
+     "claim": "[community] Ekubo $466.5M of Starknet's $472.7M 30d DEX volume (~98.7%); ~0.66% of Solana, ~1.6% of Base",
+     "verdict": "confirmed",
+     "correction": "98.69%; 0.661% of Solana ($71.47B); 1.617% of Base ($29.24B). Confidence high.",
+     "source": "https://api.llama.fi/overview/dexs/starknet ; /solana ; /base (2026-10-12)"
+    },
+    {
+     "claim": "[community] Ekubo Core mainnet 0x00000005dd3D2F4429AF886cD1a3b08289DBcEa99A294197E9eB43b0e0325b4b; Swapped fields locker, pool_key, params, delta, sqrt_ratio_after, tick_after, liquidity_after",
+     "verdict": "confirmed",
+     "correction": "Address matches EkuboProtocol/docs starknet.md; struct Swapped in src/core.cairo has exactly those fields. 'Buyer must come from tx sender' is a sound inference since locker is the calling contract. Confidence high.",
+     "source": "https://github.com/EkuboProtocol/docs/blob/main/src/content/docs/reference/contracts/starknet.md ; https://github.com/EkuboProtocol/starknet-contracts/blob/main/src/core.cairo"
+    },
+    {
+     "claim": "[community] Collab.Land: no Starknet; Telegram pricing 'in progress' (Verified Members); 1 TG group or Discord server per subscription; Discord plans 2025-11-12 free/$17.99/$35/$149/$449/Enterprise",
+     "verdict": "confirmed",
+     "correction": "Both pages match. Confidence high.",
+     "source": "https://developer.collab.land/help-docs/key-features/supported-blockchains-wallets ; https://doc.collab.land/help-docs/key-features/bot-subscription"
+    },
+    {
+     "claim": "[community] Zealy wallet chains lack Starknet; Free 1,000 claims/mo, 100 members from 2026-10-01; Standard $149, Plus $359 billed yearly; Enterprise with Telegram & X booster",
+     "verdict": "confirmed",
+     "correction": "Docs chain list (18 chains incl. TON, zkSync) has no Starknet; pricing page matches all figures. Confidence high.",
+     "source": "https://docs.zealy.io/llms-full.txt ; https://zealy.io/pricing"
+    },
+    {
+     "claim": "[community] Galxe Telegram tasks need public group, custom invite link, @Galxe_app_bot admin; OAT/NFT network list lacks Starknet (updated 2026-09-08)",
+     "verdict": "confirmed",
+     "correction": "Help article matches; dated 2026-09-08. Confidence moderate.",
+     "source": "https://help.galxe.com/en/articles/9728885-create-quest-tasks-settings"
+    },
+    {
+     "claim": "[community] Monthly users 2026-10-12: Group Help 2,798,558; Rose 2,266,240; Combot 720,371; Safeguard 251,743; Shieldy 197,658; Rick 72,374; Major 42,179; SpyDefi 27,833; Phanes Green 11,371",
+     "verdict": "confirmed",
+     "correction": "All nine figures matched exactly on t.me pages on 2026-10-12 (SpyDefi at t.me/SpyDefiBuyBot, Phanes at t.me/PhanesGreenBot, Rick at t.me/RickBurpBot, Shieldy at t.me/Shieldy_Bot). Confidence high.",
+     "source": "https://t.me/GroupHelpBot ; https://t.me/MissRose_bot ; https://t.me/Combot ; https://t.me/safeguard ; https://t.me/Shieldy_Bot"
+    },
+    {
+     "claim": "[community] Safeguard buy bot 'completely ad free', monetises /trend boosts; @Trending 468,759 and @SOLTrending 414,225 subs; docs say 7 chains, no Starknet",
+     "verdict": "confirmed",
+     "correction": "Docs say 'completely ad free', /trend boost, '7 different chains'; no Starknet. Subscriber counts fluctuate (468,712 and 414,218 at my check same day). Docs do not state /trend is the revenue model (inference). Confidence high.",
+     "source": "https://docs.safeguard.run/buy-bot/why-use.md ; https://docs.safeguard.run/buy-bot/trending.md ; https://docs.safeguard.run/llms-full.txt ; https://t.me/Trending ; https://t.me/SOLTrending"
+    },
+    {
+     "claim": "[community] Combot: Free; Pro EUR 9.99/mo non-commercial; Business EUR 100/mo (EUR 900/yr) commercial with full API; 480k+ groups, 110k+ channels, 800k+ users",
+     "verdict": "confirmed",
+     "correction": "Homepage matches (Pro also EUR 99.99/yr). Confidence high.",
+     "source": "https://combot.org/ (2026-10-12)"
+    },
+    {
+     "claim": "[community] Fake 'Safeguard' portals used as wallet drainers; separate SlowMist-reported clipboard-malware variant (date/losses unverified)",
+     "verdict": "confirmed",
+     "correction": "PCrisk (2025-10-16) describes connect-and-sign drainer. SlowMist Medium post returned HTTP 403, so the clipboard-malware variant remains unverified here. Confidence moderate.",
+     "source": "https://www.pcrisk.com/removal-guides/34117-fake-telegram-safeguard-scam"
+    },
+    {
+     "claim": "[community] Only Starknet buy bot found is Brother Eli (@brotherelibuybot): Ekubo Core Swapped, merges AVNU/Fibrous multi-hop, 0 stars; AVNU StarkPulse does wallet tracking/new pools, no group buy alerts",
+     "verdict": "confirmed",
+     "correction": "README confirms Ekubo Core Swapped decoding and netting of AVNU/Fibrous split routes; 0 stars, no LICENSE, created 2026-08-18; t.me/brotherelibuybot exists. StarkPulse site lists wallet tracking, new tokens, new pools, APY (built by AVNU), no buy alerts. 'Only' is a negative claim. Confidence moderate.",
+     "source": "https://github.com/CudanSvat/brother-eli-assistant ; https://www.starkpulse.xyz/"
+    },
+    {
+     "claim": "[community] Starknet RPC spec v0.10.4 (2026-09-10) has WS subscriptions incl. starknet_subscribeEvents and reorg; starknet.js v11.2.0 (2026-10-12) has WebSocketChannel/Provider and verifyMessageInStarknet",
+     "verdict": "corrected",
+     "correction": "Spec v0.10.4 released 2026-09-10 with starknet_subscribeEvents and starknet_subscriptionReorg: confirmed. starknet.js v11.2.0 was published 2026-10-12 but as a GitHub prerelease on npm tag 'next'; npm 'latest' is still 10.8.0. WebSocketChannel, ws provider and verifyMessageInStarknet exist in source. Confidence high.",
+     "source": "https://github.com/starkware-libs/starknet-specs/releases/tag/v0.10.4 ; https://registry.npmjs.org/starknet ; https://github.com/starknet-io/starknet.js/releases"
+    },
+    {
+     "claim": "[community] Shieldy (MIT) sold to 1inch for $329,000 in summer 2021; last commit 2026-02-09",
+     "verdict": "confirmed",
+     "correction": "Habr (2021-10-02): sold to 1inch for $329,000 in summer 2021. GitHub: MIT, last commit 2026-02-09 ('add PRIVACY.md and TERMS.md'). Confidence high.",
+     "source": "https://habr.com/en/articles/581212 ; https://github.com/backmeupplz/shieldy"
+    },
+    {
+     "claim": "[miniapps] ToS \u00a77 requires crypto Mini Apps (incl. connected bot) to use only TON, connect wallets only via TON Connect (bridging excepted), not promote non-TON assets; deadlines 2025-02-01, 2025-02-21, assets from 2025-01-21",
+     "verdict": "corrected",
+     "correction": "All quoted rules and dates confirmed in live ToS. Bridging is not the only exception: \u00a77.3 lets multichain-wallet Mini Apps manage other-chain assets inside their own interface. ToS text still says TON/Toncoin-era wording. Confidence high.",
+     "source": "https://telegram.org/tos/bot-developers (fetched 2026-10-12)"
+    },
+    {
+     "claim": "[miniapps] Regular bots without a Mini App are explicitly exempt from TON-only rules",
+     "verdict": "confirmed",
+     "correction": "'Regular Telegram bots that do not have a Mini App component are exempt.' Confidence high.",
+     "source": "https://core.telegram.org/bots/blockchain-guidelines"
+    },
+    {
+     "claim": "[miniapps] Durov 2026-05-04/05: Telegram replaces TON Foundation as driving force and becomes largest validator; Toncoin renamed Gram (GRAM) 2026-06-15 after 81.22% vote, no migration",
+     "verdict": "confirmed",
+     "correction": "Cointelegraph (2026-05-05) and AMBCrypto (2026-06-09): effective 2026-06-15 12:00 UTC, 81.22%, 'no swap, bridge, claim, or migration'. Confidence high.",
+     "source": "https://cointelegraph.com/news/telegram-to-become-tons-largest-validator-durov-says ; https://ambcrypto.com/ton-officially-rebrands-toncoin-to-gram-as-telegram-deepens-role-in-network/"
+    },
+    {
+     "claim": "[miniapps] Telegram Wallet rebranded Walt 2026-09-28 (300+ assets, trading, perps); native non-custodial Gram Wallet staged rollout from 2026-08-31",
+     "verdict": "confirmed",
+     "correction": "crypto.news 2026-09-28 (300+ assets across four chains, 70+ perps); Meduza 2026-08-31 (no KYC, gradual rollout). Registry entry renamed 'Walt (ex. Wallet)' merged 2026-10-01. Confidence moderate.",
+     "source": "https://crypto.news/wallet-in-telegram-rebrands-as-walt/ ; https://meduza.io/en/news/2026/08/31/telegram-s-new-crypto-wallet-and-why-it-skips-id-checks"
+    },
+    {
+     "claim": "[miniapps] Telegram client added as TON Connect wallet 2026-09-15 (JS bridge + SSE at tonbridge.telegram.org); Tonkeeper renamed Keeper same day; Telegram and Gram Wallet moved to top 2026-10-11, same day @tonconnect/sdk 5.0.0",
+     "verdict": "corrected",
+     "correction": "2026-09-15 commit added 'Telegram Messenger' with only an SSE bridge (tonbridge.telegram.org) and renamed Tonkeeper to Keeper. The JS bridge (key 'telegram') was added 2026-10-10. Reordering commit and @tonconnect/sdk 5.0.0 (and 4.1.0) both 2026-10-11. Confidence high.",
+     "source": "https://github.com/ton-connect/wallets-list/commits/main ; https://registry.npmjs.org/@tonconnect/sdk"
+    },
+    {
+     "claim": "[miniapps] @argent/tma-wallet deprecated: last release 1.19.3 on 2024-12-17, all 46 versions 'Package no longer supported', modified 2025-01-27",
+     "verdict": "corrected",
+     "correction": "All 46 versions deprecated and modified 2025-01-27: confirmed. 1.19.3 (2024-12-17) is the 'latest' dist-tag, but later versions were published up to 1.22.0 on 2025-01-07 (tag 'next'). Confidence high.",
+     "source": "https://registry.npmjs.org/@argent/tma-wallet"
+    },
+    {
+     "claim": "[miniapps] Cartridge PR #2461 'Remove deactivated Telegram provider' merged 2026-03-03; docs page removed same day",
+     "verdict": "confirmed",
+     "correction": "PR merged 2026-03-03T18:10Z; cartridge-gg/docs commit 'Update documentation for controller PR #2461' on 2026-03-03T18:14Z. Confidence high.",
+     "source": "https://github.com/cartridge-gg/controller/pull/2461 ; https://github.com/cartridge-gg/docs/commits"
+    },
+    {
+     "claim": "[miniapps] Ready (ex-Argent) said 2026-08-06 'no longer building a crypto neobank'; new self-custodial account on Base; assets not migrated automatically",
+     "verdict": "confirmed",
+     "correction": "Post dated Aug 6, 2026 contains all three statements. Confidence high.",
+     "source": "https://www.ready.co/blog/community-finance"
+    },
+    {
+     "claim": "[miniapps] StarkZap (npm 4.0.1, 2026-10-01) supports Privy server-side keys, Cartridge, Argent/Braavos, raw-key signers, AVNU paymaster",
+     "verdict": "confirmed",
+     "correction": "npm latest 4.0.1 published 2026-10-01; docs list Privy, Cartridge, Argent and Braavos templates, StarkSigner (local key), AVNU paymaster. 'Practical base for a bot wallet' is opinion. Confidence high.",
+     "source": "https://docs.starknet.io/build/starkzap/overview.md ; https://registry.npmjs.org/starkzap"
+    },
+    {
+     "claim": "[miniapps] Hamster Kombat monthly players ~300M (end Sep 2024) -> 40.9M early Nov 2024 after 2024-09-26 HMSTR airdrop reaching only 131M",
+     "verdict": "confirmed",
+     "correction": "Forklog 2024-11-04 citing app stats; 2024-09-26 was the listing day; 131M of 300M received tokens. Confidence high.",
+     "source": "https://forklog.com/en/hamster-kombat-loses-nearly-260-million-players-post-listing/"
+    },
+    {
+     "claim": "[miniapps] Notcoin co-founders said at Token2049 clickers are 'probably already dead' and pivoted",
+     "verdict": "corrected",
+     "correction": "Forklog (2025-05-05) attributes the quote to co-founder Vladimir Plotvinov 'in a conversation with Cointelegraph'; Token2049 is not mentioned in the article. Confidence moderate.",
+     "source": "https://forklog.com/en/notcoin-declares-the-end-of-clicker-games/"
+    },
+    {
+     "claim": "[miniapps] initData HMAC keyed by HMAC_SHA256(bot_token,'WebAppData'); Ed25519 third-party validation since 8.0; CloudStorage 1024 items; SecureStorage (9.0, 2025-04-11) 10 items; fullscreen/home-screen in 8.0 (2024-11-17); current Bot API 10.3 (2026-08-24)",
+     "verdict": "confirmed",
+     "correction": "All match webapps docs and changelog. Confidence high.",
+     "source": "https://core.telegram.org/bots/webapps ; https://core.telegram.org/bots/api-changelog"
+    },
+    {
+     "claim": "[miniapps] Bot API 10.2 blocks Mini App methods from foreign origins, on by default 2026-07-20",
+     "verdict": "confirmed",
+     "correction": "Opt-out available via @BotFather. Confidence high.",
+     "source": "https://core.telegram.org/bots/api-changelog"
+    },
+    {
+     "claim": "[miniapps] Digital goods must be paid in Stars (ToS \u00a76.2); earned Stars may take up to 21 days; rewards via Fragment",
+     "verdict": "confirmed",
+     "correction": "\u00a76.2, \u00a76.2.4 ('up to 21 days'), \u00a76.2.4.1 (Fragment). Confidence high.",
+     "source": "https://telegram.org/tos/bot-developers"
+    },
+    {
+     "claim": "[miniapps] TON 1.78M monthly active wallets (2026-05-08, ~0.12% of ~1B MAU), TVL $91.0M vs $740M peak July 2024",
+     "verdict": "confirmed",
+     "correction": "CoinShares note (2026-06-11) matches. Stale: DefiLlama TON TVL was $50.3M on 2026-10-12. Confidence moderate.",
+     "source": "https://coinshares.com/insights/research-data/the-open-network-ton-an-institutional-research-note/ ; https://api.llama.fi/v2/chains"
+    },
+    {
+     "claim": "[starknet-ai] ToS \u00a77.1-7.4: TON-only issuance, TON Connect-only wallets, migrate by 2025-02-21; regular bots exempt",
+     "verdict": "confirmed",
+     "correction": "Same as above; note \u00a77.3 multichain-wallet carve-out. Confidence high.",
+     "source": "https://telegram.org/tos/bot-developers ; https://core.telegram.org/bots/blockchain-guidelines"
+    },
+    {
+     "claim": "[starknet-ai] @argent/tma-wallet deprecated; last version 1.19.3 on 2024-12-17; modified 2025-01-27",
+     "verdict": "corrected",
+     "correction": "Deprecated (all 46 versions) and modified date correct; last published version is 1.22.0 (2025-01-07, 'next' tag); 1.19.3 is only the 'latest' tag. Confidence high.",
+     "source": "https://registry.npmjs.org/@argent/tma-wallet"
+    },
+    {
+     "claim": "[starknet-ai] Tengu (closed-source, Extended perps via TG, Turnkey) is the only Starknet TG trading bot in Starknet's 2025 review; traction and handle unknown",
+     "verdict": "corrected",
+     "correction": "Year-in-review names only Tengu ('trade Extended perps via Telegram'); Alchemy confirms Turnkey auth. Handle is known: t.me/TenguTradeBot ('fastest trading bot for Extended', site tengutrade.xyz). No public repo found (closed-source likely, unconfirmed). Traction unknown. Confidence moderate.",
+     "source": "https://www.starknet.io/blog/starknet-2025-year-in-review/ ; https://www.alchemy.com/dapps/tengu ; https://t.me/tengutradebot"
+    },
+    {
+     "claim": "[starknet-ai] StarkFi @starkfi_bot only maintained OSS (MIT) AI DeFi TG bot on Starknet; repo pushed 2026-04-28, 2 stars, 177 npm downloads/30d; Privy TEE wallets via operator auth server, 7-day JWTs",
+     "verdict": "corrected",
+     "correction": "starkfi-telegram-bot has 0 stars and no LICENSE file (README says MIT); 2 stars and MIT belong to ahmetenesdur/starkfi (pushed 2026-05-20). Push 2026-04-28, 177 downloads (2026-09-12..10-11), @starkfi_bot exists, Privy TEE + auth-server proxy + 7-day JWT confirmed. 'Maintained' is doubtful after 5+ months idle. Confidence moderate.",
+     "source": "https://github.com/ahmetenesdur/starkfi-telegram-bot ; https://github.com/ahmetenesdur/starkfi ; https://docs.starkfi.app/docs/architecture/security ; https://api.npmjs.org/downloads/point/last-month/starkfi"
+    },
+    {
+     "claim": "[starknet-ai] Snak (ex Starknet Agent Kit) last pushed 2025-10-31, no Telegram interface, private key in env vars",
+     "verdict": "confirmed",
+     "correction": "pushed_at 2025-10-31 (last commit 2025-10-30); README uses STARKNET_PRIVATE_KEY in .env; no Telegram in README. Confidence high.",
+     "source": "https://github.com/KasarLabs/snak"
+    },
+    {
+     "claim": "[starknet-ai] starknet-agentic MCP 0.2.0 (2026-10-05) refuses production unless STARKNET_SIGNER_MODE=proxy; agent account session keys, per-token daily limits, expiry, emergency revoke; factory Sepolia-only per 2026-02-22 truth sheet",
+     "verdict": "confirmed",
+     "correction": "Release tag 2026-10-05; README: 'NODE_ENV=production requires STARKNET_SIGNER_MODE=proxy'; agent-account README lists all four controls; truth sheet 'As of 2026-02-22': 'No mainnet AgentAccountFactory deployment is documented'. Confidence high.",
+     "source": "https://github.com/keep-starknet-strange/starknet-agentic"
+    },
+    {
+     "claim": "[starknet-ai] Starkzap 4.0.1 (2026-10-01), 1,798 npm downloads/30d; bundles Privy/Cartridge, AVNU paymaster, swaps, DCA, lending, bridging, confidential transfers",
+     "verdict": "confirmed",
+     "correction": "Downloads window 2026-09-12..2026-10-11. Features confirmed in docs and v2 blog (2026-03-24). Confidence high.",
+     "source": "https://registry.npmjs.org/starkzap ; https://api.npmjs.org/downloads/point/last-month/starkzap ; https://www.starknet.io/blog/starkzap-v2/"
+    },
+    {
+     "claim": "[starknet-ai] AIXBT lost 55.5 ETH (~$106k) 2025-03-18 via operator dashboard access and two queued prompts; AI not manipulated",
+     "verdict": "confirmed",
+     "correction": "AIID report matches. Confidence high.",
+     "source": "https://incidentdatabase.ai/reports/5012"
+    },
+    {
+     "claim": "[starknet-ai] Freysa $47,316 on Base won 2024-11-29 after 482 attempts by reframing approveTransfer as incoming funds",
+     "verdict": "confirmed",
+     "correction": "$47,316.05; 482 attempts by 195 players. Confidence high.",
+     "source": "https://www.theblock.co/post/328747/human-player-outwits-freysa-ai-agent-in-47000-crypto-challenge"
+    },
+    {
+     "claim": "[starknet-ai] 2026-05-04 ~3B DRB (~$150-200k) moved from Bankr-controlled Grok wallet via NFT permission + Morse prompt executed by Bankrbot; most/all returned",
+     "verdict": "confirmed",
+     "correction": "AIID 1556 (~$200k, NFT then Morse decode, 'returned or converted'); CryptoTimes ($175k, full value returned minutes later). Confidence moderate.",
+     "source": "https://incidentdatabase.ai/cite/1556/ ; https://www.cryptotimes.io/2026/05/04/xais-grok-ai-loses-175k-in-crypto-heist-via-clever-prompt-injection-then-gets-it-all-back/"
+    },
+    {
+     "claim": "[starknet-ai] Koi Security found 341 malicious skills of 2,857 on OpenClaw ClawHub (Feb 2026), mostly delivering AMOS stealer",
+     "verdict": "corrected",
+     "correction": "341/2,857 (Koi) confirmed via BleepingComputer (campaign 2026-01-27..02-01). BleepingComputer names the macOS payload a NovaStealer variant (plus a Windows infostealer) delivered via fake 'AuthTool'; AMOS attribution unverified (The Hacker News returned 403). Confidence moderate.",
+     "source": "https://www.bleepingcomputer.com/news/security/malicious-moltbot-skills-used-to-push-password-stealing-malware/"
+    },
+    {
+     "claim": "[starknet-ai] Banana Gun 2024-09-19 exploit ~$3M from 11 users via message oracle; refunded; 2h delay + 2FA",
+     "verdict": "confirmed",
+     "correction": "Matches The Block. Confidence high.",
+     "source": "https://www.theblock.co/news/ecosystems/2024-09-25-banana-gun-exploit-refund-318074"
+    },
+    {
+     "claim": "[starknet-ai] DefiLlama 30d fees 2026-10-12: Terminal $5.55M, Maestro $1.10M, Trojan $1.05M (all-time $228M), Bankr $3.0M; Axiom $37.3M, GMGN $27.4M",
+     "verdict": "confirmed",
+     "correction": "Exact: 5.55M, 1.10M, 1.05M (all-time $227.96M), Bankr $3.01M (DefiLlama category 'Interface', not Telegram Bot), Axiom $37.34M, GMGN $27.43M. Confidence high.",
+     "source": "https://api.llama.fi/overview/fees?dataType=dailyFees (2026-10-12)"
+    },
+    {
+     "claim": "[starknet-ai] Starknet TVL $165.9M; 30d DEX $473M (Ekubo $467M); 30d AVNU aggregator $30.4M",
+     "verdict": "confirmed",
+     "correction": "$165.85M TVL; $472.7M DEX; Ekubo $466.5M; AVNU $30.45M. Confidence high.",
+     "source": "https://api.llama.fi/v2/chains ; https://api.llama.fi/overview/dexs/starknet ; https://api.llama.fi/overview/aggregators/starknet"
+    },
+    {
+     "claim": "[starknet-ai] Broadcast ~30 msg/s (20/min per group) unless paid broadcasts (1000/s, 0.1 Stars/msg, 100k Stars, 100k MAU)",
+     "verdict": "confirmed",
+     "correction": "Matches FAQ; 0.1 Stars applies only above the free 30/s. Confidence high.",
+     "source": "https://core.telegram.org/bots/faq"
+    }
+   ],
+   "notes": "Checked 2026-10-12. I could not use web search: the session's 200-search budget was already spent. Every claim was checked by fetching primary pages directly, plus the DefiLlama, npm and GitHub APIs (gh) and t.me public pages. Raw API pulls are in /private/tmp/claude-501/-Volumes-Crucial-X9-Project-Zero/d800fe91-298c-4880-a918-3f58ce7625b8/scratchpad/.\n\nNone of the claims were refuted. The corrections that matter most:\n1. TON Connect: on 2026-09-15 the Telegram entry got only the SSE bridge. Its JS bridge was added on 2026-10-10.\n2. @argent/tma-wallet: 1.19.3 is only the 'latest' tag. Releases continued to 1.22.0 on 2025-01-07.\n3. starknet.js 11.2.0 is a prerelease on the 'next' tag. The stable 'latest' is still 10.8.0.\n4. Banana Gun on DefiLlama was still about $25k/month in June 2026. It fell under $10k only from July.\n5. DEXX: the cited source says 12,000+ wallets were affected, not 900+.\n6. StarkFi bot repo: 0 stars and no LICENSE file. The 2 stars and MIT belong to the main starkfi repo.\n7. Tengu's handle is known: @TenguTradeBot.\n8. Nansen: 17 chains, not 16, are in the 30-60s latency tier.\n9. Notcoin: the source places the quote in a Cointelegraph interview. It does not mention Token2049.\n10. ClawHub: the malware family is unverified. BleepingComputer calls it a NovaStealer variant, not AMOS.\n11. Telegram ToS \u00a77.3 also exempts multichain wallets that manage assets inside their own interface, so bridging is not the only exception.\n\nNot verifiable here:\n- The Nansen pricing launch date. The cited article now redirects to the academy home page.\n- The year Arkham removed TON support (The Defiant is blocked by Cloudflare).\n- That the PADRE token's utility ended.\n- fomo's 625K traders and $4B volume (not in Fortune).\n- Banana Gun's early '563 ETH' figure.\n- SlowMist's clipboard-malware report (Medium returned 403).\n\nStale data: TON TVL on DefiLlama is now $50.3M, against the CoinShares figure of $91.0M from May 2026."
+  },
+  "topics": [
+   "trading",
+   "tracking",
+   "community",
+   "miniapps",
+   "starknet-ai"
+  ]
+ },
+ {
+  "group": "build",
+  "verdict": {
+   "checked": [
+    {
+     "claim": "Latest starknet-specs tag is v0.10.4 (2026-09-10) and changed only the wallet API. Node JSON-RPC stays at 0.10.2 (released 2026-03-23).",
+     "verdict": "confirmed",
+     "correction": "The v0.10.4 release notes say nodes stay at 0.10.2 and the Proving API and P2P specs at 0.10.3. In practice, on 2026-10-12 PublicNode reported specVersion 0.10.3, ZAN /rpc/v0_10 and Alchemy /rpc/v0_10 reported 0.10.3-rc.0, and Cartridge reported 0.10.2. Do not hard-check for exactly 0.10.2. Confidence: high.",
+     "source": "https://github.com/starkware-libs/starknet-specs/releases/tag/v0.10.4 ; GitHub releases API (v0.10.2 published 2026-03-23T17:14Z) ; live starknet_specVersion probes 2026-10-12"
+    },
+    {
+     "claim": "WS API arrived in spec v0.8.0 (2025-03-17). v0.9.0 (2025-08-11) added finality_status on subscribeEvents, PRE_CONFIRMED/CANDIDATE and subscribeNewTransactions/Receipts. v0.10.1 (2026-03-13) allows arrays of addresses. 1024-block backfill limit.",
+     "verdict": "confirmed",
+     "correction": "Verified by diffing starknet_ws_api.json at v0.8.0, v0.9.0, v0.10.2 and v0.10.4. Error 68 TOO_MANY_BLOCKS_BACK reads 'Cannot go back more than 1024 blocks'. Confidence: high.",
+     "source": "https://github.com/starkware-libs/starknet-specs/releases ; https://raw.githubusercontent.com/starkware-libs/starknet-specs/v0.9.0/api/starknet_ws_api.json"
+    },
+    {
+     "claim": "Mainnet runs 0.14.4 and averaged about 1.77-1.8 s per block over the last 10,000 blocks (head about 16.29M). l1_accepted lagged by 5,789 blocks (about 2.85 h).",
+     "verdict": "confirmed",
+     "correction": "On 2026-10-12 (head 16,287,830) I measured 0.14.4, an average of 1.777 s per block over 10,000 blocks and 1.825 s over 1,000. The l1_accepted lag is volatile: I saw 6,655 blocks (about 3.3 h) on both PublicNode and Cartridge. Treat any lag figure as a snapshot. The docs do say ~6 s at v0.14.0. Confidence: high.",
+     "source": "starknet_getBlockWithTxHashes on https://starknet-rpc.publicnode.com and Cartridge, 2026-10-12 ; https://docs.starknet.io/learn/cheatsheets/version-notes"
+    },
+    {
+     "claim": "getEvents chunk_size is capped at 1024 on Cartridge, ZAN and Alchemy (1025 gives error 31). Key-only scans stop after about 81,920 blocks per call. One key position accepted 1024 OR'd values on Cartridge, ZAN and Alchemy, and 256 on PublicNode.",
+     "verdict": "corrected",
+     "correction": "The chunk cap (error 31 'Requested page size is too big') and the 81,919-block scan window are confirmed on all three. PublicNode does not cap chunk_size at 1024 (1025 worked) and scanned a 300k-block key-only range in one call with no token. The PublicNode OR-limit is wrong: it accepted up to 1021 values in the second key position (alongside one selector) and rejected 1022 or more with error 34 'Too many keys provided in a filter'. Cartridge, ZAN and Alchemy accepted 1025 or more, so 1024 is a lower bound there, not a cap. Confidence: high.",
+     "source": "Own live getEvents tests, 2026-10-12 (Cartridge /rpc/v0_10, ZAN /rpc/v0_10, Alchemy /starknet/version/rpc/v0_10/demo, PublicNode)"
+    },
+    {
+     "claim": "starknet.js npm 'latest' is 10.8.0 (Node >=22) and 11.2.0 is on 'next' (Node >=22.12, 2026-10-12). Six advisories were published 2026-09-28, and 7.x-9.x are end-of-life.",
+     "verdict": "confirmed",
+     "correction": "dist-tags are latest=10.8.0, next=11.2.0 (2026-10-12T09:18Z) and beta=11.0.0-beta.14. The six GHSAs were all published 2026-09-28. The v10.8.0 notes state that 7.x, 8.x and 9.x are end-of-life. Confidence: high.",
+     "source": "https://registry.npmjs.org/starknet ; https://github.com/starknet-io/starknet.js/security/advisories ; https://github.com/starknet-io/starknet.js/releases/tag/v10.8.0"
+    },
+    {
+     "claim": "STRK, ETH, native USDC and USDT emit keys=[sel,from,to], data=[low,high]. USDC.e and WBTC emit the legacy keys=[sel], data=[from,to,low,high]. STRK switched inside block 8,987,785 (2026-04-20), and ETH in the same window.",
+     "verdict": "confirmed",
+     "correction": "Block 8,987,785 (2026-04-20 16:37 UTC, Starknet 0.14.2) contains both STRK layouts. ETH switched slightly earlier, between blocks 8,987,636 and 8,987,682 (last old 8,987,635, first new 8,987,682). Confidence: high.",
+     "source": "starknet_getEvents on Cartridge mainnet RPC, 2026-10-12"
+    },
+    {
+     "claim": "STRK and ETH addresses are the same on mainnet and Sepolia. Native USDC is 0x033068...35fb on mainnet and 0x0512fe...8343 on Sepolia.",
+     "verdict": "confirmed",
+     "correction": "Matches docs.starknet.io and Circle, and on-chain symbol/decimals checks agree. Caveat: 0x0512fe...8343 is also deployed on mainnet as a contract with symbol 'USDC', 6 decimals and total_supply 0. A bot that validates tokens by symbol alone could be fooled, so validate by address per chain. Confidence: high.",
+     "source": "https://docs.starknet.io/learn/cheatsheets/chain-info ; https://developers.circle.com/stablecoins/usdc-contract-addresses ; on-chain calls 2026-10-12"
+    },
+    {
+     "claim": "Pragma oracle 0x2a85bd...875b get_data_median uses 8 decimals. STRK about 0.0957 (11 sources), ETH about 2,515.5, BTC about 82,682. SOL/USD reverts. Sepolia is about 5.3 days stale.",
+     "verdict": "confirmed",
+     "correction": "At my check on 2026-10-12: STRK/USD 0.09484 (11 sources), ETH/USD 2,523.27 (11), BTC/USD 82,962.79 (10). Prices are volatile. SOL/USD reverts with 'No pair found'. Sepolia feed 0x36031d...131a was 5.35 days stale. Confidence: high.",
+     "source": "starknet_call on mainnet and Sepolia via Cartridge, 2026-10-12 ; https://docs.pragma.build/starknet/development"
+    },
+    {
+     "claim": "Blast is shut down (points to Alchemy), Lava returns 410, dRPC's free plan excludes Starknet. PublicNode, Cartridge, ZAN (the starknet.js default) and the Alchemy demo key work without a key.",
+     "verdict": "corrected",
+     "correction": "Blast (403 'no longer available... use Alchemy'), Lava (410 discontinued) and the working endpoints are confirmed. ZAN is the RPC_DEFAULT_NODES entry in 11.2.0. The Alchemy demo works at /starknet/version/rpc/v0_10/demo. dRPC's free plan excludes Starknet mainnet only ('chain is not available on free plan', code 35). dRPC's chain list marks Starknet Sepolia has_free:true. Confidence: high.",
+     "source": "Own endpoint probes 2026-10-12 ; https://drpc.org/pricing (embedded chain list) ; https://unpkg.com/starknet@11.2.0/dist/index.d.ts"
+    },
+    {
+     "claim": "Alchemy free tier is 30M CU/month. getEvents and call cost 20 CU, blockNumber 10 CU. WebSocket subscriptions are billed at 0.04 CU/byte.",
+     "verdict": "confirmed",
+     "correction": "Confidence: high (fetched 2026-10-12).",
+     "source": "https://www.alchemy.com/pricing ; https://www.alchemy.com/docs/reference/compute-unit-costs"
+    },
+    {
+     "claim": "Alchemy WS events lack finality_status, transaction_index and event_index. PublicNode WS delivered only 1 STRK Transfer in 40 s while heads streamed. Cartridge and ZAN have no WS at the tested paths.",
+     "verdict": "confirmed",
+     "correction": "My 40 s probe: Alchemy sent 44 events with fields block_hash, block_number, data, from_address, keys and transaction_hash only. PublicNode sent 24 heads and 0 events. Cartridge and ZAN wss closed with 1006 at /rpc/v0_10 and /ws. Confidence: moderate (short single probe).",
+     "source": "Own WebSocket probes (Node 26 WebSocket), 2026-10-12"
+    },
+    {
+     "claim": "Staking contract 0x00ca17...84a7 is version 3.0.0, with a 20,000 STRK minimum and a 7-day exit window. Active tokens and totals as listed.",
+     "verdict": "confirmed",
+     "correction": "version() returns '3.0.0'. min_stake is 2e22 (20,000 STRK) and exit_wait_window is 604,800 s (7 days). Active tokens are STRK, WBTC, tBTC, SolvBTC and strkBTC; LBTC (0x036834...61a4) is listed but disabled. Totals: 1,542,785,837 STRK, 354.77 SolvBTC, 165.27 WBTC, 27.91 strkBTC, 5.32 tBTC. Confidence: high.",
+     "source": "starknet_call via Cartridge 2026-10-12 ; https://docs.starknet.io/learn/cheatsheets/chain-info"
+    },
+    {
+     "claim": "Delegator position comes from pool.get_pool_member_info_v1(member) (reward_address, amount, unclaimed_rewards, commission, unpool_amount, unpool_time). Pools per token come from staking.staker_pool_info(staker). BTC-pool rewards are paid in STRK.",
+     "verdict": "confirmed",
+     "correction": "The pool class ABI matches. Note that get_pool_member_info_v1 returns Option<PoolMemberInfoV1>, while pool_member_info_v1 returns the struct directly. staker_pool_info returns StakerPoolInfoV2 {commission, pools:[{pool_contract, token_address, amount}]}. The docs say BTC stakers 'earn staking rewards in STRK'. Confidence: high.",
+     "source": "starknet_getClass for pool class 0x69565c...ab5 and staking ABI ; https://docs.starknet.io/learn/protocol/staking"
+    },
+    {
+     "claim": "Pathfinder 0.23.0 (2026-07-20) removed JSON-RPC 0.6/0.7/0.8. The starknet.js v11 notes say Starknet 0.14.4 deletes the feeder-gateway endpoints.",
+     "verdict": "confirmed",
+     "correction": "The Pathfinder v0.23.0 notes say 'JSON-RPC 0.8, 0.7 and 0.6 API support has been removed' and that 0.9 is now the default on '/'. The starknet.js v11.0.0 breaking note says constants.BaseUrl was removed because 'Starknet v0.14.4 deletes' the feeder-gateway endpoints. Confidence: high.",
+     "source": "https://github.com/software-mansion/pathfinder/releases/tag/v0.23.0 ; https://github.com/starknet-io/starknet.js/releases/tag/v11.0.0"
+    },
+    {
+     "claim": ".stark names resolve on-chain via naming contract 0x6ac597...b678. api.starknet.id did not respond on 2026-10-12.",
+     "verdict": "confirmed",
+     "correction": "The address is in the 11.2.0 StarknetIdContract.MAINNET constant. domain_to_address and address_to_domain worked live (for example starknet, braavos, vitalik). api.starknet.id resolves to 5.39.72.91, but port 443 refused connections. Confidence: high.",
+     "source": "https://unpkg.com/starknet@11.2.0/dist/index.mjs ; own calls and curl 2026-10-12"
+    },
+    {
+     "claim": "Telegram guidelines require Mini Apps to use TON exclusively and TON Connect only, with a migration deadline of 21 Feb 2025. Regular bots without a Mini App are exempt.",
+     "verdict": "confirmed",
+     "correction": "Nuances: clauses 7.1-7.4 had to be met by 1 Feb 2025, and existing apps had to transition by 21 Feb 2025. Exclusive TON applies to issuing and distributing assets. Multichain TON wallet Mini Apps may manage other-chain assets inside the app. Confidence: high.",
+     "source": "https://core.telegram.org/bots/blockchain-guidelines ; https://telegram.org/tos/bot-developers (section 7)"
+    },
+    {
+     "claim": "Ready docs say the Argent Telegram wallet and Ready Telegram SDK can no longer be used. @argent/tma-wallet was last published as alpha 1.19.3 on 2024-12-17, pinned to starknet 6.11.0, and needed mainnet whitelisting.",
+     "verdict": "corrected",
+     "correction": "The Ready notice and the whitelisting requirement in the README are confirmed. However, 1.19.3 is only the 'latest' dist-tag. Versions 1.20.0 to 1.22.0 were published later on the 'next' tag, the last being 1.22.0 on 2025-01-07, also pinned to starknet 6.11.0. The 'alpha' dist-tag points to 1.0.1. Confidence: high.",
+     "source": "https://docs.ready.co/argent-wallets/telegram-wallet ; https://registry.npmjs.org/@argent/tma-wallet ; https://unpkg.com/@argent/tma-wallet@1.19.3/README.md"
+    },
+    {
+     "claim": "Stable starknet.js is 10.8.0 and 11.2.0 is on 'next'. executePaymasterTransaction runs assertPaymasterTransactionSafety (chain, gas token, max fee, strict call equality), and the paymaster flow requires a SNIP-9 account.",
+     "verdict": "confirmed",
+     "correction": "The 10.8.0 source matches. The SNIP-9 check runs in buildPaymasterTransaction only when no deploymentData is given; undeployed accounts skip it. Confidence: high.",
+     "source": "https://github.com/starknet-io/starknet.js/blob/v10.8.0/src/account/default.ts (lines ~1042-1158)"
+    },
+    {
+     "claim": "SNIP-29 is in Review, created 2025-02-05, spec 0.1.0-rc0. Methods isAvailable, getSupportedTokens, trackingIdToLatestHash, buildTransaction, executeTransaction. Fee modes 'sponsored' or 'default' with gas_token. Sponsorship is not guaranteed.",
+     "verdict": "confirmed",
+     "correction": "The FEE_MODE description says sponsorship 'does not guaranteed sponsorship and will depend on the paymaster provider'. Confidence: high.",
+     "source": "https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-29.md ; https://github.com/starknet-io/SNIPs/blob/main/assets/snip-29/paymaster_api.json"
+    },
+    {
+     "claim": "AVNU paymaster endpoints, gasless tokens and no key needed. Gasfree needs x-paymaster-api-key and prepaid STRK credits. Sepolia is unlimited and free. Markup is undocumented.",
+     "verdict": "confirmed",
+     "correction": "Also confirmed in starknet.js PAYMASTER_RPC_NODES. The gasless list also includes solvBTC, LBTC, EKUBO, NSTR, LORDS and wstETH. Confidence: high.",
+     "source": "https://docs.avnu.fi/docs/paymaster/index ; https://docs.avnu.fi/docs/paymaster/gasfree"
+    },
+    {
+     "claim": "SNIP-9 v2 uses execute_from_outside_v2, SNIP-12 rev 1 and interface ID 0x1d1144...9872. ArgentX v0.3.0 supports v1; ArgentX v0.4.0, Braavos v1.1.0 and OZ v1.0.0 (src9) support v2.",
+     "verdict": "confirmed",
+     "correction": "Confidence: high.",
+     "source": "https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-9.md ; https://github.com/starknet-io/starknet.js/blob/develop/www/versioned_docs/version-10.8.0/guides/account/outsideExecution.md"
+    },
+    {
+     "claim": "Ready session keys need Ready backend co-signing and Ready enabled as co-signer, with mainnet whitelisting (none on Sepolia). Sessions can be revoked on-chain.",
+     "verdict": "confirmed",
+     "correction": "Confidence: high.",
+     "source": "https://docs.ready.co/aa-use-cases/session-keys"
+    },
+    {
+     "claim": "Braavos sponsored sessions are bound to callerAddress and execute through SNIP-9, with requestedMethods, spendingLimits and an executeAfter/Before window. starknet-sessions is at 0.0.2 (2024-11-21).",
+     "verdict": "confirmed",
+     "correction": "Braavos describes the design as 'aligned with SNIP-9 Outside Execution but provides additional flexibility', not plain SNIP-9. npm 0.0.2 was published 2024-11-21 and nothing since, so it may be stale. Confidence: moderate.",
+     "source": "https://braavos.app/braavos-session-keys/ ; https://registry.npmjs.org/starknet-sessions"
+    },
+    {
+     "claim": "Cartridge sessions store a policies Merkle root, expires_at, an optional guardian key and on-chain revoke_session. A wildcard-policy root is possible. Paymastered transactions go through execute_from_outside_v3 with a 10-minute window. Approve policies need spender and amount.",
+     "verdict": "confirmed",
+     "correction": "The 10-minute window is given in the docs as an example validity window. Confidence: high.",
+     "source": "https://docs.cartridge.gg/controller/architecture ; https://docs.cartridge.gg/controller/sessions"
+    },
+    {
+     "claim": "A 17 Feb 2026 session-key SNIP draft from Chipi Pay says the Argent, Braavos, Cartridge and other implementations are mutually incompatible.",
+     "verdict": "confirmed",
+     "correction": "Topic created 2026-02-17T14:51Z by Carlos Castillo (haycarlitos). It lists Argent, Braavos, Cartridge, Bibliotheca DAO and Chipi Pay as 'all mutually incompatible'. I did not independently confirm the author's Chipi Pay affiliation. Confidence: moderate.",
+     "source": "https://community.starknet.io/t/snip-session-keys-for-smart-accounts/116131"
+    },
+    {
+     "claim": "AVNU Exchange is 0x042702...b0f. Its published multi_route_swap before_swap asserts beneficiary == caller.",
+     "verdict": "confirmed",
+     "correction": "exchange.cairo line ~423 has assert(beneficiary == caller_address, 'Beneficiary is not the caller'). The solver path asserts beneficiary == user_address. I did not verify that the deployed class matches the main-branch source. Confidence: moderate.",
+     "source": "https://docs.avnu.fi/resources/contracts ; https://github.com/avnu-labs/avnu-contracts-v2/blob/main/src/exchange.cairo"
+    },
+    {
+     "claim": "Native USDC is 0x033068...35fb and USDC.e is 0x053c91253bc9682c...68a8. Starkzap's paymaster page shows a USDC address matching neither.",
+     "verdict": "confirmed",
+     "correction": "Starkzap shows 0x053c91253bc96bfed3be381a97265e250ed0a2e2cbf1a54898ad0d2f7982f78f, which returns 'Contract not found' on mainnet (2026-10-12). Confidence: high.",
+     "source": "https://docs.avnu.fi/updates/circle-usdc-migration ; https://docs.starknet.io/build/starkzap/paymasters ; starknet_getClassHashAt"
+    },
+    {
+     "claim": "Starknet docs give a 7-day staking lockup, while AVNU's staking API says 21-day unbonding. The sources conflict.",
+     "verdict": "confirmed",
+     "correction": "Both texts are confirmed. On-chain exit_wait_window = 604,800 s (7 days) supports the Starknet docs for direct protocol staking. Confidence: high.",
+     "source": "https://docs.starknet.io/learn/protocol/staking ; https://docs.avnu.fi/api/staking/initiate-withdraw ; staking.contract_parameters_v1()"
+    },
+    {
+     "claim": "Banana Gun exploit, 19 Sep 2024: about $3M from 11 users via a Telegram message oracle vulnerability, refunded from treasury.",
+     "verdict": "confirmed",
+     "correction": "Refund announced 24 Sep 2024. Confidence: high.",
+     "source": "https://www.theblock.co/post/318074/banana-gun-exploit-refund"
+    },
+    {
+     "claim": "MiCA's transitional period ended definitively on 1 Jul 2026, so CASPs serving EU clients now need authorisation.",
+     "verdict": "confirmed",
+     "correction": "Art. 143(3) runs 'until 1 July 2026 or until... granted or refused... whichever is sooner'. Several member states ended it earlier (for example NL, FI, LV, HU, SI on 30 Jun 2025 and SE on 30 Sep 2025). Confidence: high.",
+     "source": "https://www.elliptic.co/blog/the-end-of-micas-transitional-period ; https://www.esma.europa.eu/publications-and-data/interactive-single-rulebook/mica/article-143-transitional-measures"
+    },
+    {
+     "claim": "grammY 1.46.0 (2026-08-26) supports Bot API 10.3 (2026-08-24). Telegraf latest is 4.16.3 (2024-02-29) with a README advertising API 7.1. node-telegram-bot-api v2.0.0 (2026-08-16) is a rewrite; 2.1.0 (2026-08-24) is latest.",
+     "verdict": "confirmed",
+     "correction": "node-telegram-bot-api has 2.2.0-rc2 on 'next'. Its v2 notes say 'from-scratch redesign with no backward compatibility'. Confidence: high.",
+     "source": "https://registry.npmjs.org/grammy ; https://github.com/grammyjs/grammY/releases/tag/v1.46.0 ; https://core.telegram.org/bots/api-changelog ; https://registry.npmjs.org/telegraf ; https://github.com/yagop/node-telegram-bot-api/releases"
+    },
+    {
+     "claim": "Telegram rate limits are 1 msg/s per chat, 20/min per group and about 30/s bulk, with 429 retry_after. Paid broadcasts allow up to 1000/s at 0.1 Stars and need 100k Stars and 100k MAU.",
+     "verdict": "confirmed",
+     "correction": "The 0.1 Stars fee applies only to messages above the free 30/s. Confidence: high.",
+     "source": "https://core.telegram.org/bots/faq ; https://telegram.org/tos/bot-developers (6.2.5)"
+    },
+    {
+     "claim": "node:sqlite has needed no flag since v22.13.0/v23.4.0 and became RC 1.2 in v24.15.0/v25.7.0. All its APIs are synchronous.",
+     "verdict": "corrected",
+     "correction": "The flag and stability history are confirmed. Not all APIs are synchronous: sqlite.backup(sourceDb, path) (added in v23.8.0) returns a Promise. The DatabaseSync, StatementSync and SQLTagStore classes are synchronous. Confidence: high.",
+     "source": "https://nodejs.org/docs/latest-v24.x/api/sqlite.html"
+    },
+    {
+     "claim": "Node 24 enters maintenance 2026-10-20 with EOL 2028-04-30, and Node 26 becomes LTS 2026-10-28. starknet.js 10.8.0 adds RPC 0.10.4 and needs Node >=22. 11.2.0 is on 'next'.",
+     "verdict": "confirmed",
+     "correction": "Confidence: high.",
+     "source": "https://github.com/nodejs/Release/blob/main/schedule.json ; https://registry.npmjs.org/starknet ; https://github.com/starknet-io/starknet.js/releases/tag/v10.8.0"
+    },
+    {
+     "claim": "Mainnet reports 0.14.4 and PublicNode specVersion 0.10.3. 1,000 blocks took 1,789 s. Starknet 0.15 (planned Sep 2026, deprecating RPC 0.9) has not shipped.",
+     "verdict": "confirmed",
+     "correction": "My check gave 1,825 s for 1,000 blocks, which varies. The starknet.io roadmap still lists 0.15 for September 2026 with RPC 0.9 deprecation, and the chain reports 0.14.4. Confidence: high.",
+     "source": "Own RPC queries 2026-10-12 ; https://www.starknet.io/developers/version-releases/"
+    },
+    {
+     "claim": "In spec v0.10.4, getEvents accepts a list of addresses. subscribeEvents has a PRE_CONFIRMED/ACCEPTED_ON_L2 filter (pre-confirmed can repeat), subscriptionReorg exists, and backfill is limited to 1024 blocks.",
+     "verdict": "confirmed",
+     "correction": "Confidence: high.",
+     "source": "https://github.com/starkware-libs/starknet-specs/tree/v0.10.4/api"
+    },
+    {
+     "claim": "Alchemy gives 30M CU free and $0.525 per 1M CU PAYG. getEvents and call are 20 CU, blockNumber 10 CU. The Starknet FAQ lists only v0_6 to v0_9.",
+     "verdict": "confirmed",
+     "correction": "Alchemy nonetheless serves /starknet/version/rpc/v0_10 (the demo key reported 0.10.3-rc.0 on 2026-10-12), so the FAQ is stale. Confidence: high.",
+     "source": "https://www.alchemy.com/pricing ; https://www.alchemy.com/docs/reference/compute-unit-costs ; https://www.alchemy.com/docs/reference/starknet-api-faq"
+    },
+    {
+     "claim": "Fly shared-cpu-1x costs $2.19 (256MB), $3.69 (512MB) and $6.70 (1GB); volumes $0.15/GB-month on a single server, not replicated; Fly recommends at least two.",
+     "verdict": "confirmed",
+     "correction": "Prices are region-dependent (the page notes that). Confidence: high.",
+     "source": "https://fly.io/docs/about/pricing/ ; https://fly.io/docs/volumes/overview/"
+    },
+    {
+     "claim": "Vercel functions max out at 300 s (Hobby) and 800 s (Pro, 1800 s beta). Hobby cron runs once a day at \u00b159 min. So Vercel cannot host a long-polling bot or a chain poller.",
+     "verdict": "corrected",
+     "correction": "The limits are confirmed, but the conclusion goes too far. Vercel cannot run a persistent long-polling process. A webhook-mode Telegram bot does work on Vercel, and Pro/Enterprise cron runs once per minute, so a per-minute chain poller is feasible on Pro. Confidence: high.",
+     "source": "https://vercel.com/docs/functions/limitations ; https://vercel.com/docs/cron-jobs/usage-and-pricing"
+    },
+    {
+     "claim": "Digital goods must be sold in Stars only: 0.013 USD per Star, up to 21-day hold, via Fragment. Subscriptions use period 2592000 and max 10,000 Stars. /terms and /paysupport are required, and pre_checkout must be answered within 10 s.",
+     "verdict": "confirmed",
+     "correction": "The /terms requirement allows 'or offers a similarly easy way of accessing your Terms'. Confidence: high.",
+     "source": "https://telegram.org/tos/bot-developers ; https://core.telegram.org/bots/api ; https://core.telegram.org/bots/payments-stars"
+    },
+    {
+     "claim": "Mini Apps with crypto functionality, including their connected bot, must use TON exclusively. Plain bots are exempt, so a Starknet bot should not ship a Mini App.",
+     "verdict": "confirmed",
+     "correction": "ToS section 7 says 'either within the Mini App itself or within its connected bot'. The guidelines exempt bots without a Mini App component. The recommendation follows from that. Confidence: high.",
+     "source": "https://telegram.org/tos/bot-developers ; https://core.telegram.org/bots/blockchain-guidelines"
+    },
+    {
+     "claim": "MiCA Art. 3(1)(17) custody covers private keys; (24) advice is personalised recommendations; the transitional period ended 1 Jul 2026 under Art. 143(3). ESMA's 23 Jun 2026 statement says stop onboarding immediately.",
+     "verdict": "confirmed",
+     "correction": "The ESMA75-113276571-1710 statement is dated 23 June 2026 and says unauthorised CASPs 'must... immediately stop onboarding new EU clients'. EUR-Lex blocked automated fetches, so the definitions were checked via ESMA's Interactive Single Rulebook. Confidence: high.",
+     "source": "https://www.esma.europa.eu/publications-and-data/interactive-single-rulebook/mica/article-3-definitions ; ESMA PDF (2026-06)"
+    },
+    {
+     "claim": "FinCEN FIN-2019-G001 treats hosted wallets as money transmitters under four criteria; unhosted single-sig users are not. The DOJ memo of 2025-04-07 deprioritises \u00a71960(b)(1)(A)/(B) prosecutions without changing the law.",
+     "verdict": "confirmed",
+     "correction": "The memo is 'Ending Regulation By Prosecution', dated April 7, 2025. It says prosecutors should not charge \u00a71960(b)(1)(A)/(B) violations absent willfulness, and that 'This priority is not required by law'. Confidence: high.",
+     "source": "https://www.fincen.gov/sites/default/files/2019-05/FinCEN%20Guidance%20CVC%20FINAL%20508.pdf ; https://www.justice.gov/dag/media/1395781/dl?inline"
+    },
+    {
+     "claim": "The Senate cloture vote on the CLARITY Act (which includes BRCA developer protections) failed 49-50 in Sep 2026. There is no enacted federal safe harbour as of Oct 2026.",
+     "verdict": "confirmed",
+     "correction": "The Defiant (2026-09-15) reports cloture on the motion to proceed to H.R. 3633 failed 49-50, and Tillis moved to reconsider. Neither cited article confirms that BRCA is included, and I could not check congress.gov (403) for any action after 15 Sep. Treat the BRCA inclusion and the 'still no safe harbour' status as moderate. Confidence: moderate.",
+     "source": "https://thedefiant.io/news/regulation/senate-blocks-clarity-act-49-50-with-no-democratic-votes-to-proceed ; https://decrypt.co/375174/senate-keeps-clarity-act-alive-with-crypto-bill-vote-set-for-september"
+    },
+    {
+     "claim": "starknet-devnet v0.10.0 (2026-09-03, Docker shardlabs/starknet-devnet-rs:0.10.0) targets 0.14.4 and RPC 0.10.2, with fork and dump/load. grammY apiRoot plus environment:'test' allows a local fake Bot API server.",
+     "verdict": "corrected",
+     "correction": "The devnet facts are confirmed: release 2026-09-03, Docker tag 0.10.0, compatibility table 0.14.4 / RPC 0.10.2, forking and dump/load. For grammY, apiRoot alone is enough to point at a local fake server. environment:'test' selects Telegram's separate test infrastructure and changes the request path, so it is not part of an offline setup. Confidence: high.",
+     "source": "https://github.com/0xSpaceShard/starknet-devnet/releases/tag/v0.10.0 ; https://raw.githubusercontent.com/0xSpaceShard/starknet-devnet/main/website/docs/compatibility.md ; https://grammy.dev/ref/core/apiclientoptions"
+    }
+   ],
+   "notes": "I checked all 45 claims on 2026-10-12, mostly with my own live RPC and WebSocket calls, the npm registry, GitHub (gh), and primary docs and PDFs. The web-search budget was used up, so I used direct fetches and curl instead. Totals: 38 confirmed, 7 corrected, 0 refuted, 0 unverifiable.\n\nMost important corrections for the build:\n1. **PublicNode key limit**: it accepts up to 1021 OR'd values in one key position (1022 or more gives error 34), not 256. It also does not cap chunk_size at 1024.\n2. **dRPC**: only Starknet mainnet is excluded from the free plan; Sepolia is free.\n3. **@argent/tma-wallet**: the last publish was 1.22.0 on 2025-01-07 under the 'next' tag, not 1.19.3.\n4. **node:sqlite**: backup() is async; the other classes are synchronous.\n5. **Vercel**: a webhook bot and a per-minute cron poller (Pro) are both feasible. Only persistent long-polling is impossible.\n6. **grammY**: environment:'test' means Telegram's test DC, not a local fake server; apiRoot alone is enough.\n7. **Live spec versions**: nodes report 0.10.3 (PublicNode) or 0.10.3-rc.0 (ZAN, Alchemy), even though the specs repo says nodes stay at 0.10.2.\n\nNew findings:\n- 0x0512fe...8343 (Circle's Sepolia USDC address) also exists on mainnet as a 'USDC' token with zero supply. Never validate tokens by symbol.\n- The USDC address on Starkzap's docs page is not deployed on mainnet.\n- Alchemy serves /rpc/v0_10 despite its FAQ listing only up to v0_9.\n- The l1_accepted lag is volatile: 6,655 blocks (about 3.3 h) at my check.\n\nVolatile figures (prices, lag, staking totals) are snapshots. The scratch scripts are in /private/tmp/claude-501/-Volumes-Crucial-X9-Project-Zero/d800fe91-298c-4880-a918-3f58ce7625b8/scratchpad (rpc.py, kec.py, ws.mjs)."
+  },
+  "topics": [
+   "read",
+   "act",
+   "ops"
+  ]
+ }
+]

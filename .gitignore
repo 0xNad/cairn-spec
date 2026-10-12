@@ -1,0 +1,8 @@
+# Third-party copies kept locally only (Telegram docs, TDLib source, tarballs)
+prototypes/tg/*.html
+prototypes/tg/*.txt
+prototypes/tg/*.cpp
+prototypes/tgprobe/*.tar
+node_modules/
+.DS_Store
+form/.lp-data-*
