@@ -4,6 +4,12 @@ Extracted from [SPEC.md](SPEC.md) §3 (2026-10-12). Internal draft: not publishe
 
 **Revision, 12 Oct:** the Stakers round (F36–F45: staking cards and alerts, quiet hours, digest, time zones) is dropped by PM decision. Network guard is now round 4. Prizes: 9M / 9M / 9M / 8M = 35M.
 
+**Revision, 13 Oct (review):**
+- **Round 2 covers every token.** It watches every ERC-20 on Starknet, not only the registry (F13, F15–F17), using one chain-wide events filter.
+- **Unverified tokens are handled.** Tokens outside the registry are read from their contract, marked unverified, and can be muted (F56). `/balance` takes any token (F57).
+- **Round 3's trader comes from the token's `Transfer` flows**, never from the transaction's sender (F26).
+- **Judging is longer:** `rank_hours` is 48.
+
 **Priority**
 - **must:** in the round's brief, and checked.
 - **should:** in the brief and checked, but the first item to move to a later round. It moves if the creator's private reference build of that round runs past about 6 h, and the call is made before the round's checks are committed.
@@ -30,16 +36,18 @@ Extracted from [SPEC.md](SPEC.md) §3 (2026-10-12). Internal draft: not publishe
 | F10 | Security baseline: secrets only from the environment and never echoed; only configured hosts; read-only RPC; data directory 700 with files 600; repository scan; no dependencies | automatic | O | must | check + rubric |
 | F11 | Starter network files | `networks/SN_MAIN.json`, `networks/SN_SEPOLIA.json` | O | must | check (shape, symbols) + rubric (addresses) |
 
-### Round 2: Wallet alerts
+### Round 2: Wallet alerts, every token
 
 | ID | Feature | Command or trigger | Persona | Priority | Verified by |
 |---|---|---|---|---|---|
 | F12 | Watch list with labels, and a list with Remove buttons | `/watch <address> [label]`, `/unwatch <address\|label>`, `/list` | H, A | must | check |
-| F13 | Transfer alerts in and out, for both event layouts, one message per transaction per chat | `Transfer` event | H | must | check + rubric |
+| F13 | Transfer alerts in and out for **every ERC-20 on Starknet**, registry or not, in both event layouts, through one chain-wide events filter; one message per transaction per chat | `Transfer` event | H | must | check + rubric |
 | F14 | Noise floor: zero-amount transfers (address poisoning) and fee transfers are never alerted | automatic | H, A | must | check |
-| F15 | Per-chat token floor | `/min <SYMBOL> <amount>` | H, A | should | check |
-| F16 | Approval alerts for a watched owner, with an "unlimited" flag | `Approval` event | H | should | check |
-| F17 | Whale alerts, with mints and burns labelled | `/whale <SYMBOL> <amount>`, `/unwhale <SYMBOL>` | A | must | check |
+| F15 | Per-chat token floor, for any token | `/min <SYMBOL\|token address> <amount>` | H, A | should | check |
+| F16 | Approval alerts for a watched owner, on any token, with an "unlimited" flag | `Approval` event | H | must | check |
+| F17 | Whale alerts on any token, with mints and burns labelled | `/whale <SYMBOL\|token address> <amount>`, `/unwhale <SYMBOL\|token address>` | A | must | check |
+| F56 | Tokens outside the registry: symbol and decimals read from the contract and cached; shown as unverified, in code, with the contract linked; contracts without valid decimals (legacy NFTs) ignored; per-chat mute | `/mute <token address>`, `/unmute <token address>` | H, A | must | check + rubric |
+| F57 | Any-token balances: an optional token argument, and the tokens seen moving for a watched address | `/balance <address> [SYMBOL\|token address]` | H | should | check |
 | F18 | Transaction tracking to L2 acceptance, L1 acceptance or revert | `/track <hash>` | B, H | must | check |
 | F19 | Paste to look up, with Watch and Track buttons | a bare address or hash in a private chat | H | should | check |
 | F20 | Delivery guarantees: nothing from before the subscription; at least once across SIGKILL; never twice once Telegram accepted it; bounded catch-up | `CAIRN_MAX_BLOCKS` | all | must | check |
@@ -53,9 +61,9 @@ Extracted from [SPEC.md](SPEC.md) §3 (2026-10-12). Internal draft: not publishe
 | ID | Feature | Command or trigger | Persona | Priority | Verified by |
 |---|---|---|---|---|---|
 | F25 | Token trade feed from Ekubo and AVNU, netted per transaction, one post per transaction | `/feed <SYMBOL\|address> [<min>\|$<usd>] [buys\|all]`, `/unfeed` | A | must | check + rubric |
-| F26 | Post content: side, amount, amount paid, USD value, trader, venue, time, link | each trade | A, H | must | check (fields) + rubric (look) |
+| F26 | Post content: side, amount, amount paid, USD value, trader (the account whose balance of the token changed, never the transaction's sender), venue, time, link | each trade | A, H | must | check (fields) + rubric (look) |
 | F27 | New-holder flag | the trader's balance was 0 in the previous block | A | should | check |
-| F28 | Tokens outside the registry, read from their contract (short-string or ByteArray symbol) | `/feed <address>` | A | should | check |
+| F28 | Feeds on tokens outside the registry, reusing round 2's contract reading (F56) | `/feed <address>` | A | must | check |
 | F29 | On-chain price from Pragma with its age and source count; stale flag; "no price" for an unknown pair | `/price [SYMBOL…]` | H, A | must | check |
 | F30 | USD values in alerts and posts, from fresh prices only | display | all | must | check |
 | F31 | Starknet ID names accepted wherever an address is | `name.stark` | all | must | check |

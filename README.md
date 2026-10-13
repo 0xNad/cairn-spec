@@ -1,34 +1,150 @@
-# Cairn: a Starknet Telegram bot, planned as a Hotpod project
+# Cairn
 
-Planning material for **Cairn** (working name), an open-source, self-hostable Telegram bot for Starknet that only
-reads the chain: no keys, no signing, no Mini App. It is to be built by coding agents in four judged rounds on
-[Hotpod](https://agent-launchpad-six.vercel.app). Draft of 12 October 2026: nothing here is launched yet.
+**Every Starknet token, every wallet, in Telegram, and never your keys.**
 
-## Milestones (35,000,000 points)
+Cairn is an open-source Telegram bot for Starknet:
+- **Wallet alerts:** watch any wallet across every token on the chain, with transfer and approval alerts.
+- **Whale and buy feeds:** big-move alerts, and a live buy feed for your project's group.
+- **Lookups:** balances and transactions, right in the chat.
 
-1. **Lookups** (9M): balances, transactions and chain status in chat, in private chats and groups.
-2. **Wallet alerts** (9M): watched wallets, approvals, whale alerts, transaction tracking; each alert delivered exactly once.
-3. **Group feeds, prices and names** (9M): Ekubo and AVNU buy feed, Pragma USD prices, .stark names.
-4. **Network guard and operations** (8M): stall and reorg alerts with corrections, RPC failover, health endpoint,
-   seed-phrase and phishing-link guards.
+It only reads the chain. It holds no keys, signs nothing, never trades and has no Mini App. It runs as a
+single Node.js process with zero dependencies, on any Starknet RPC. It is MIT-licensed, so anyone can host it.
 
-Out of scope: trading, custody, a Mini App, signing transactions.
+It will be built in public by AI coding agents, in four judged rounds on
+[Hotpod](https://agent-launchpad-six.vercel.app).
+
+> **Status, 13 October 2026:** the spec and the pod file are under review. Nothing is launched yet. This
+> repository is the plan.
+
+## What it looks like
+
+These messages are illustrative: the exact copy and layout are what the agents compete on.
+
+```
+⬇️ In · treasury
++12,500 STRK (≈ $1,067.50)
+from 0x05a3…77e1
+2026-10-13 10:42:07 UTC · view on Voyager
+```
+
+```
+⚠️ Approval · hot wallet
+Unlimited USDC to spender 0x02f1…c09a
+2026-10-13 10:44:51 UTC · view on Voyager
+```
+
+```
+⬇️ In · cold wallet
++1,000 USDC  unverified token 0x07ab…3f10
+from 0x0412…9be2
+```
+
+The last one is an airdropped fake. Cairn sees every token, but anything outside its curated registry is marked
+**unverified**: it shows no dollar value and no clickable symbol, and one `/mute` silences it.
+
+```
+🟢 Buy · 2,450,000 MYTOKEN
+for 1,250 STRK (≈ $106.75) on Ekubo
+by example.stark · new holder
+2026-10-13 10:51:30 UTC · view on Voyager
+```
+
+The buyer is the account that actually received the token. When a relayer or paymaster sent the transaction on
+the user's behalf, which happens often on Starknet, Cairn still credits the user, not the relayer.
+
+## Why Starknet needs it
+
+- **The big trackers don't cover Starknet.** Cielo, DeBank, Zerion and Whale Alert don't support the chain.
+- **The existing Starknet bots each do one job.** We found bots for buy pings, staking and new launches.
+  Cairn is built to be open, self-hostable and to cover every token from day one.
+- **Telegram is where Starknet communities talk.** A plain bot that only reads, with no Mini App, is the shape
+  Telegram's rules allow.
+- **Starknet is small enough to read whole.** The chain emits about 17 token transfers and approvals per block.
+  Cairn reads all of them with one RPC call per pass, so no token is ever left out (measured on mainnet,
+  13 October 2026).
+
+## The rounds
+
+| Round | What ships | Prize |
+| --- | --- | --- |
+| 1. Lookups | `/balance`, `/tx` and `/status` in any chat; a frozen interface, resilience and a security baseline | 9,000,000 points |
+| 2. Wallet alerts, every token | `/watch` any wallet: transfers and approvals on every ERC-20, unverified tokens flagged, whale alerts, `/track`, each alert delivered exactly once | 9,000,000 points |
+| 3. Group feeds, prices and names | A live buy feed from Ekubo and AVNU, USD values from the Pragma oracle, .stark names, flood control | 9,000,000 points |
+| 4. Network guard and operations | Stall and reorg alerts, RPC failover, a health endpoint, seed-phrase and phishing-link guards, Docker | 8,000,000 points |
+
+Each round runs in three phases: 48 hours to build, 12 hours to reveal and 48 hours to rank. The top three
+entries share the prize 60 / 25 / 15, paid in Hotpod points.
+
+## Bring your agent
+
+On Hotpod, every agent builds the same round, starting from the previous round's winning code.
+- **Gate.** Entries are sealed, then they must pass offline checks: a fake Telegram and a fake Starknet node run
+  inside the gate.
+- **Judging.** Entries are revealed and judges rank them.
+- **Next round.** The winner is merged, and it becomes the base everyone builds the next round from.
+
+The fun is in the hard parts:
+- alerts that arrive exactly once, even after a `kill -9` mid-send;
+- buys decoded correctly through aggregator routes, multi-hop swaps and round trips;
+- trades credited to the right account when a relayer sent the transaction;
+- token amounts computed exactly with BigInt, and symbols stored either as short strings or as ByteArrays;
+- all of it in one Node.js 24 process, with no dependencies.
+
+Connect your coding agent on [Hotpod](https://agent-launchpad-six.vercel.app). Every brief and rubric is in
+[`pod/.launchpad/project.md`](pod/.launchpad/project.md).
+
+## For Starknet communities
+
+- **Want a buy feed or whale alerts in your group?** Open an issue: tell us the token and what you'd want to
+  see.
+- **Run a treasury, a DAO or a validator?** Tell us which wallets you would watch, and why.
+- **Want to host an instance?** It is one process: `node cairn.mjs run`, a BotFather token and an RPC URL.
+
+## Safe by design
+
+- **Read-only.** Cairn never calls a write method. It never holds a key, never asks for a seed phrase and never
+  builds a signing link.
+- **No custody, no trading, no Mini App.** Holding user keys is what caused the big Telegram-bot losses on
+  other chains.
+- **Two hosts only.** It talks to Telegram and your RPC, and nothing else: no telemetry, no price API.
+- **It keeps very little.** It stores chat ids, settings and the addresses you watch, never message text or
+  usernames. `/export` shows everything stored for a chat, and `/forget` erases it.
+- **Facts, not advice.** No rankings, no trending lists, no buy buttons.
+
+## FAQ
+
+**Is it a trading bot?** No. It reads the chain and tells you what happened.
+
+**Which tokens?** Every ERC-20 on Starknet. Tokens outside the curated registry are marked unverified.
+
+**Which RPC?** Any Starknet JSON-RPC 0.10 node. The public `starknet-rpc.publicnode.com` works out of the box.
+
+**Who runs it?** Anyone: it is MIT-licensed and self-hostable. Whether a shared public instance will run, and
+who would run it, is still open.
+
+**Why "Cairn"?** A cairn is a pile of stones that marks a trail and warns walkers, and the word sounds like
+Cairo. It is a working name.
 
 ## What is here
 
 | Path | What it is |
 | --- | --- |
-| [`pod/.launchpad/project.md`](pod/.launchpad/project.md) | The pod file: settings, pitch and the four rounds' briefs and rubrics. Hotpod's project-file check accepts it |
-| [`form/launch-form.pdf`](form/launch-form.pdf) | Hotpod's "Launch a pod" form filled from that file, rendered locally |
+| [`pod/.launchpad/project.md`](pod/.launchpad/project.md) | The pod file: settings, pitch, and the four rounds' briefs and rubrics. It is authoritative |
 | [`FEATURES.md`](FEATURES.md) | The feature list by round, with what is checked and what is judged |
-| [`SPEC.md`](SPEC.md) | The full spec: architecture, fixed interface, check design, risks and open decisions. Its round 4 "Stakers and calm" was dropped; `project.md` is authoritative |
-| [`research/BEST-TELEGRAM-BOTS.md`](research/BEST-TELEGRAM-BOTS.md) | The best Telegram crypto bots and their offering, fact-checked |
+| [`SPEC.md`](SPEC.md) | The full spec: architecture, fixed interface, check design, risks and open decisions (revised 13 October). Its round 4 "Stakers and calm" was dropped |
+| [`form/launch-form.pdf`](form/launch-form.pdf) | Hotpod's "Launch a pod" form, filled from the 12 October pod file. Refill it from the current file before launch |
+| [`research/BEST-TELEGRAM-BOTS.md`](research/BEST-TELEGRAM-BOTS.md) | The best Telegram crypto bots and what they offer, fact-checked |
 | [`research/BUILD-ON-STARKNET.md`](research/BUILD-ON-STARKNET.md) | How to build a Telegram bot on Starknet, fact-checked |
 | `research/draft-*.md`, `research/spec-input-*.md` | The three competing spec drafts and the research notes behind them |
 | `prototypes/` | Research prototypes: a fake Telegram Bot API, probes, and Starknet selector and RPC helpers |
 
 ## Open before round 1
 
-- The final name and @handle (no trademark or handle search done yet).
-- The dependency policy: none, or only `starknet` at version 10.8 or later.
-- Proof that the bot can reach the checks' loopback fakes inside Hotpod's gate.
+- **The final name and @handle.** `@cairnbot` is already taken on Telegram.
+- **The dependency policy:** none, or only `starknet` at version 10.8 or later. Round 1's check freezes it
+  for good.
+- **`ARCHITECTURE.md`, complete for all four rounds.** Between rounds only `.launchpad/` can change, so it
+  must include the .stark encoding vectors.
+- **A test run under Hotpod's real gate.** It should prove the bot reaches the checks' loopback fakes. The risk
+  is low: both run in the same container.
+- **Judges' time.** Hotpod's per-judge ranking window must match the 48-hour ranking phase.
