@@ -3,6 +3,12 @@
 Final spec, 2026-10-12.
 
 > **Revision, 12 Oct (PM decision):** round 4 "Stakers and calm" is dropped. Round 5 "Network guard and operations" becomes round 4. Prizes are 9,000,000 / 9,000,000 / 9,000,000 / 8,000,000 = 35,000,000. The authoritative round list is `pod/.launchpad/project.md`; the round-4 sections below are kept for reference only.
+>
+> **Revision, 13 Oct (review):**
+> - **Every token.** Round 2 now watches every ERC-20 on Starknet, not only the registry. It uses one chain-wide `getEvents` filter (§4.9). Tokens outside the registry are read from their contract, marked unverified and can be muted (F56, F57).
+> - **The trader.** Round 3's trader now comes from the transaction's `Transfer` flows of the token, not from its sender or the AVNU `beneficiary` (§5, round 3).
+> - **Judging.** `rank_hours` is 48 so judges can run each entry for an hour.
+> - **Reorgs stay as written.** They are rare and judged acceptable (D24).
 
  It is a synthesis of three drafts (community, Starknet-native and checkable MVP) and four research notes. The checkable-MVP draft is the base.
 
@@ -26,7 +32,9 @@ Final spec, 2026-10-12.
 > Cairn is an open-source Telegram bot for Starknet that anyone can host. It answers balance and transaction lookups in chat. It alerts you when a watched wallet moves funds or grants an approval. It posts a project group's token buys and whale moves with USD values and .stark names. It tells delegators and validators about missed attestations, commission changes and unlocks. It warns everyone when the chain stalls or reorganises, and corrects any alert a reorg made false. It reads the chain over any JSON-RPC 0.10 node, never holds a key or signs anything, has no Mini App, and runs as one Node.js 24 process with no dependencies.
 
 **Why this, and why now**
-- **Nothing like it exists on Starknet.** The research found no buy bot, whale bot, wallet-alert bot or staking monitor, and Cielo, DeBank, Zerion and Whale Alert do not cover Starknet. Confidence moderate, since this rests on absence of evidence [L§1, §2, §4].
+- **No open, all-token watcher exists on Starknet.** Cielo, DeBank, Zerion and Whale Alert do not cover Starknet, and no whale bot was found.
+  - *Corrected 13 Oct:* single-purpose bots do exist: a live buy bot (@brotherelibuybot), a staking monitor (StakeMate) and an older wallet tracker (StarkPulse).
+  - Cairn's gap is the open (MIT), self-hostable, read-only bot that watches every token and every wallet (D25).
 - **This shape is the one Telegram allows.** Plain bots without a Mini App are exempt from Telegram's TON-only rule, and that rule is what killed Argent/Ready's Telegram wallet. Confidence high [T§0, L§1].
 - **Starknet makes holders watch things by hand.**
   - Rewards must be claimed manually.
@@ -143,16 +151,18 @@ A principle marked *check* is enforced by a test from the round that introduces 
 | F10 | Security baseline: secrets only from the environment and never echoed; only configured hosts; read-only RPC; data directory 700 with files 600; repository scan; no dependencies | automatic | O | must | check + rubric |
 | F11 | Starter network files | `networks/SN_MAIN.json`, `networks/SN_SEPOLIA.json` | O | must | check (shape, symbols) + rubric (addresses) |
 
-### Round 2: Wallet alerts
+### Round 2: Wallet alerts, every token
 
 | ID | Feature | Command or trigger | Persona | Priority | Verified by |
 |---|---|---|---|---|---|
 | F12 | Watch list with labels, and a list with Remove buttons | `/watch <address> [label]`, `/unwatch <address\|label>`, `/list` | H, A | must | check |
-| F13 | Transfer alerts in and out, for both event layouts, one message per transaction per chat | `Transfer` event | H | must | check + rubric |
+| F13 | Transfer alerts in and out for **every ERC-20 on Starknet**, registry or not, in both event layouts, through one chain-wide events filter; one message per transaction per chat | `Transfer` event | H | must | check + rubric |
 | F14 | Noise floor: zero-amount transfers (address poisoning) and fee transfers are never alerted | automatic | H, A | must | check |
-| F15 | Per-chat token floor | `/min <SYMBOL> <amount>` | H, A | should | check |
-| F16 | Approval alerts for a watched owner, with an "unlimited" flag | `Approval` event | H | should | check |
-| F17 | Whale alerts, with mints and burns labelled | `/whale <SYMBOL> <amount>`, `/unwhale <SYMBOL>` | A | must | check |
+| F15 | Per-chat token floor, for any token | `/min <SYMBOL\|token address> <amount>` | H, A | should | check |
+| F16 | Approval alerts for a watched owner, on any token, with an "unlimited" flag | `Approval` event | H | must | check |
+| F17 | Whale alerts on any token, with mints and burns labelled | `/whale <SYMBOL\|token address> <amount>`, `/unwhale <SYMBOL\|token address>` | A | must | check |
+| F56 | Tokens outside the registry: symbol and decimals read from the contract and cached; shown as unverified, in code, with the contract linked; contracts without valid decimals (legacy NFTs) ignored; per-chat mute | `/mute <token address>`, `/unmute <token address>` | H, A | must | check + rubric |
+| F57 | Any-token balances: an optional token argument, and the tokens seen moving for a watched address | `/balance <address> [SYMBOL\|token address]` | H | should | check |
 | F18 | Transaction tracking to L2 acceptance, L1 acceptance or revert | `/track <hash>` | B, H | must | check |
 | F19 | Paste to look up, with Watch and Track buttons | a bare address or hash in a private chat | H | should | check |
 | F20 | Delivery guarantees: nothing from before the subscription; at least once across SIGKILL; never twice once Telegram accepted it; bounded catch-up | `CAIRN_MAX_BLOCKS` | all | must | check |
@@ -166,9 +176,9 @@ A principle marked *check* is enforced by a test from the round that introduces 
 | ID | Feature | Command or trigger | Persona | Priority | Verified by |
 |---|---|---|---|---|---|
 | F25 | Token trade feed from Ekubo and AVNU, netted per transaction, one post per transaction | `/feed <SYMBOL\|address> [<min>\|$<usd>] [buys\|all]`, `/unfeed` | A | must | check + rubric |
-| F26 | Post content: side, amount, amount paid, USD value, trader, venue, time, link | each trade | A, H | must | check (fields) + rubric (look) |
+| F26 | Post content: side, amount, amount paid, USD value, trader (the account whose balance of the token changed, never the transaction's sender), venue, time, link | each trade | A, H | must | check (fields) + rubric (look) |
 | F27 | New-holder flag | the trader's balance was 0 in the previous block | A | should | check |
-| F28 | Tokens outside the registry, read from their contract (short-string or ByteArray symbol) | `/feed <address>` | A | should | check |
+| F28 | Feeds on tokens outside the registry, reusing round 2's contract reading (F56) | `/feed <address>` | A | must | check |
 | F29 | On-chain price from Pragma with its age and source count; stale flag; "no price" for an unknown pair | `/price [SYMBOL…]` | H, A | must | check |
 | F30 | USD values in alerts and posts, from fresh prices only | display | all | must | check |
 | F31 | Starknet ID names accepted wherever an address is | `name.stark` | all | must | check |
@@ -354,6 +364,11 @@ Secrets come only from the environment, never from flags, because flags show up 
 - A bad entry exits 2 and names its JSON path, e.g. `networks/SN_MAIN.json: tokens[3].decimals: …`.
 - From round 3, a missing contract switches its feature off, and the bot replies saying so. It never exits 2 for a missing contract.
 
+**What the registry means.**
+- In round 1, it is the list `/balance` reads.
+- From round 2 (13 Oct revision), it is the list of *verified* tokens: their symbols, decimals and Pragma pairs.
+- It no longer limits what Cairn sees. Alerts, whales, minimums and `/balance <address> <token>` cover every ERC-20, and tokens outside it are read from their contract and marked unverified (round 2, F56).
+
 **Starter mainnet registry.** Checks assert the shape and symbols only. The creator and the judges review the addresses [C§8].
 
 | Symbol | Address | Dec. | Transfer layout | Pragma pair | Round |
@@ -409,6 +424,7 @@ Secrets come only from the environment, never from flags, because flags show up 
   - the update offset and the command list sent;
   - the cursor and the last `CAIRN_REORG_DEPTH` block hashes;
   - the delivery ledger (key, state, `message_id`), kept for 7 days of chain time;
+  - from round 2, the token metadata cache (symbol, decimals, or "not a coin", kept 7 days of chain time), muted tokens per chat, and the tokens seen moving for each watched address;
   - from round 3, price samples (24 h) and a name cache;
   - from round 4, staking snapshots;
   - from round 5, the time the head was first seen.
@@ -503,7 +519,7 @@ These are fixed so checks can match exactly. Before comparing, checks strip tags
 **RPC hygiene**
 - At most `CAIRN_RPC_RPS` calls per second.
 - On HTTP 429, 5xx or a timeout: up to 3 tries, with backoff of at least `Retry-After`, then a "node busy" reply.
-- One address per `getEvents` filter (works on 0.10.0). Every `continuation_token` is followed. Continuation tokens are never reused across endpoints [S§1].
+- `getEvents` filters name at most one address (works on 0.10.0). Round 2's `Transfer`/`Approval` filter names **none**, so it covers every token; round 3's venue filters name one each. `chunk_size` is 1000, because Cartridge refuses more than 1024 [V]. Every `continuation_token` is followed. Continuation tokens are never reused across endpoints [S§1].
 
 **Errors** [C§2, S§1, moderate on the numbers]
 
@@ -521,8 +537,8 @@ These are fixed so checks can match exactly. Before comparing, checks strip tags
 | Round | Methods |
 |---|---|
 | 1 | `starknet_specVersion`, `starknet_chainId`, `starknet_blockNumber`, `starknet_getBlockWithTxHashes` (header: `timestamp`, `sequencer_address`, `l1_gas_price`, `l1_data_gas_price`, `l2_gas_price` in FRI [V]), `starknet_call`, `starknet_getClassHashAt`, `starknet_getTransactionStatus`, `starknet_getTransactionReceipt` |
-| 2 | `starknet_getEvents`; `starknet_getBlockWithTxHashes` by number (for the fee rule) |
-| 3 | `starknet_getTransactionByHash` (`sender_address`); `starknet_call` at `{block_number}` (new-holder flag) |
+| 2 | `starknet_getEvents` (one chain-wide `Transfer`/`Approval` filter); `starknet_getBlockWithTxHashes` by number (for the fee rule); `starknet_call` for `symbol` and `decimals` of tokens outside the registry |
+| 3 | `starknet_getEvents` on `ekubo_core` (`Swapped`) and `avnu_exchange` (`Swap`); `starknet_call` at `{block_number}` (new-holder flag). No `starknet_getTransactionByHash`: the trader comes from `Transfer` flows |
 | 4 | `starknet_call` on the staking, attestation and pool contracts |
 | 5 | `starknet_getBlockWithTxHashes` by number, to compare hashes |
 | never | `starknet_add*`, WebSocket subscriptions, any host that is not configured |
@@ -534,9 +550,10 @@ These are fixed so checks can match exactly. Before comparing, checks strip tags
 | `Transfer`, modern (STRK, ETH, USDC, USDT, strkBTC, tBTC) | keys `[sel, from, to]`, data `[low, high]` | [S§2]; strkBTC and tBTC [V] |
 | `Transfer`, legacy (USDC.e, WBTC, SolvBTC) | keys `[sel]`, data `[from, to, low, high]` | [S§2]; SolvBTC [V] |
 | `Approval` | The same split, with owner and spender in place of from and to | [V] for all nine registry tokens' families: 3/2 for the modern ones, 1/4 for the legacy ones |
+| Any other `Transfer`/`Approval` (round 2's chain-wide filter) | keys 3 and data 2: a modern ERC-20. Keys 1 and data 4: a legacy ERC-20 if the contract answers `decimals`, otherwise a legacy NFT. Keys 5 and data 0 (an NFT, token id in the keys) and every other shape: ignored | [V] 13 Oct, 500 blocks: 6,348 Transfer 3/2, 1,560 Approval 3/2, 322 Transfer 1/4, 168 Approval 1/4, 2 Approval 5/0 |
 | Fee payment | The **last** event of a transaction: a STRK `Transfer` from the sender to the block header's `sequencer_address`, for exactly `actual_fee.amount` | [V] on 8 mainnet transactions |
 | Ekubo `Swapped` | keys `[sel]`; 21 data felts: 0 locker; 1 token0; 2 token1; 3 fee; 4 tick_spacing; 5 extension; 6–7 params.amount (mag, sign); 8 is_token1; 9–10 sqrt_ratio_limit; 11 skip_ahead; **12–13 delta.amount0 (mag, sign); 14–15 delta.amount1 (mag, sign)**; 16–17 sqrt_ratio_after; 18–19 tick_after; 20 liquidity_after. Sign 1 means negative. **A positive delta means paid into the pool** | Layout [S§5]. Sign [V]: on 14 transactions, the per-transaction sum of deltas equals the net transfers into Ekubo Core |
-| AVNU `Swap` | keys `[sel]`; data `[taker, sell_token, sell_low, sell_high, buy_token, buy_low, buy_high, beneficiary]` | [S§5]. In 15 sampled transactions taker equals beneficiary, and in 10 of them it is a contract driven by a bot account [V] |
+| AVNU `Swap` | keys `[sel]`; data `[taker, sell_token, sell_low, sell_high, buy_token, buy_low, buy_high, beneficiary]` | [S§5]. In 15 sampled transactions taker equals beneficiary, and in 10 of them it is a contract driven by a bot account [V]. On 13 Oct a sponsored route named a wrapper contract as both taker and beneficiary [V], so neither identifies the trader (round 3 uses `Transfer` flows) |
 | `NewPoolMember` (later use) | keys `[sel, member, staker]`, data `[reward_address, amount]` | [V] |
 
 **Call layouts.** A Cairo `Option` is tag 0 for Some and 1 for None. A None is a single felt.
@@ -614,14 +631,14 @@ payout: top3-60-25-15
 pick: creator-in-judging
 build_hours: 48
 reveal_hours: 12
-rank_hours: 12
+rank_hours: 48
 ---
 ```
 
 | n | Title | Adds | Checked by | Prize | Usable bot after the round |
 |---|---|---|---|---|---|
 | 1 | Lookups | Frozen interface; `tick`, `run` and `doctor`; `/status`, `/balance`, `/tx`; group addressing; resilience; security baseline | 29 tests against the fake Telegram, the fake node and the trap | 7,000,000 | A private Starknet lookup bot |
-| 2 | Wallet alerts | Watches; transfer, approval and whale alerts; `/track`; buttons; exactly-once delivery; admin gating; rate limits; `/export` and `/forget` | Event fixtures in both layouts, paging, a kill during a send, restarts, migration, 403 | 7,000,000 | Personal and treasury wallet alerts, the top-ranked gap [L§6] |
+| 2 | Wallet alerts, every token | Watches; transfer, approval and whale alerts on every ERC-20 through one chain-wide filter; unverified tokens and `/mute`; `/balance` for any token; `/track`; buttons; exactly-once delivery; admin gating; rate limits; `/export` and `/forget` | Event fixtures in both layouts, an unregistered token, a spam symbol, a legacy NFT, paging, a kill during a send, restarts, migration, 403 | 7,000,000 | Personal and treasury wallet alerts on any token, the top-ranked gap [L§6] |
 | 3 | Group feeds, prices and names | Ekubo and AVNU buy feed; Pragma prices and USD; .stark names; group budget; topics | Recorded swap layouts (direct, aggregator, multi-hop, round trip); fake Pragma and naming contracts | 8,000,000 | A buy and whale bot for project groups |
 | 4 | Stakers and calm | `/staking`, stake watches, missed attestation, commission and exit, unlocks, reminders, low balance; time zone, quiet hours, digest | Fake staking, pool and attestation contracts across epochs; block timestamps drive time | 6,000,000 | A staking monitor for delegators and validators |
 | 5 | Network guard and operations | Stall and recovery, reorg corrections, confirmations, failover, gap skip, `/healthz` and `/metrics`, seed and phishing guards, deploy guide | A frozen head, a replayed reorg, two fake nodes, HTTP probes, guard fixtures | 7,000,000 | An instance a community can run unattended |
@@ -730,21 +747,23 @@ The publicnode endpoint serves spec 0.10.3 [S§7]. This is safe because the bot 
 - C3: follow the token and the RPC URL through the code, then grep the logs and `CAIRN_DATA`.
 - C4: read `cairn.mjs` and its imports, and imagine adding `/watch`.
 
-### Round 2: Wallet alerts (prize 7,000,000)
+### Round 2: Wallet alerts, every token (prize 7,000,000)
 
-**Brief.** Cairn watches wallets for a chat and delivers every alert exactly once. Round 1's commands, formats and checks stay as they are.
+**Brief.** Cairn watches wallets for a chat across every token on Starknet, not only the registry, and delivers every alert exactly once. Round 1's commands, formats and checks stay as they are.
 
 **Commands**
 - `/watch <address> [label]` adds a watch. A label is at most 32 characters and is escaped on output.
 - `/unwatch <address|label>` removes one.
-- `/list` shows every subscription (watches, whales, minimums, tracks), each with a Remove button.
-- `/whale <SYMBOL> <amount>` posts every transfer of that registry token at or above the amount, in token units. Mints (from 0x0) and burns (to 0x0) are labelled. `/unwhale <SYMBOL>` stops it.
-- `/min <SYMBOL> <amount>` sets the chat's floor for watch alerts on that token. The default is any non-zero amount.
+- `/list` shows every subscription (watches, whales, minimums, tracks, muted tokens), each with a Remove button.
+- `/whale <SYMBOL|token address> <amount>` posts every transfer of that token at or above the amount, in token units. Any ERC-20 works, not only the registry. Mints (from 0x0) and burns (to 0x0) are labelled. `/unwhale <SYMBOL|token address>` stops it.
+- `/min <SYMBOL|token address> <amount>` sets the chat's floor for watch alerts on that token. The default is any non-zero amount.
+- `/mute <token address>` silences one token in the chat, for spam airdrops. `/unmute <token address>` undoes it.
+- `/balance <address> [SYMBOL|token address]` gains an optional token, which may be any ERC-20. For an address watched in the chat, `/balance` also lists the non-zero balances of the tokens seen moving for it since the watch began.
 - `/track <hash>`:
   - posts once on L2 acceptance, with execution status and fee;
   - then once on L1 acceptance, or once on a revert with its reason;
   - says "not found" after 600 s of chain time.
-- `/export` replies with `<pre>{"chat_id":…,"watches":[{"address","label","since_block"}],"whales":[{"symbol","min"}],"minimums":{"<SYMBOL>":"<amount>"},"tracks":[{"hash","since_block"}]}</pre>`, split at 4096 characters. Later rounds add keys.
+- `/export` replies with `<pre>{"chat_id":…,"watches":[{"address","label","since_block"}],"whales":[{"token","symbol","min"}],"minimums":{"<token address>":"<amount>"},"tracks":[{"hash","since_block"}],"muted":["<token address>"]}</pre>`, split at 4096 characters. Later rounds add keys.
 - `/forget` deletes everything stored for the chat.
 - **Paste to look up**, in a private chat:
   - an address gets the `/balance` reply with a Watch button;
@@ -756,13 +775,31 @@ The publicnode endpoint serves spec 0.10.3 [S§7]. This is safe because the bot 
 
 **Scanning**
 - Each pass scans the blocks after the cursor, up to `CAIRN_MAX_BLOCKS` of them.
-- For each registry token it uses one `starknet_getEvents` filter with keys `[[Transfer, Approval]]`, paged until no `continuation_token` comes back.
-- Both layouts are parsed, chosen by `keys.length` (§4.9).
+- It uses **one chain-wide `starknet_getEvents` filter**: keys `[[Transfer, Approval]]`, no `address`, `chunk_size` 1000, paged until no `continuation_token` comes back.
+  - Cartridge refuses pages above 1024 (error 31); publicnode accepts 10,000 [V].
+  - Mainnet emits about 17 of these events per block. On 13 Oct 2026, 500 blocks held 8,400 events from only 23 contracts and paged in 9 calls taking 2.1 s in total. A pass at the default poll therefore reads one page [V].
+- Each event is decoded by its shape (§4.9):
+  - keys `[sel, a, b]` and data `[low, high]`: a modern ERC-20 event;
+  - keys `[sel]` and data `[a, b, low, high]`: a legacy ERC-20 event, if its contract answers `decimals`; otherwise a legacy NFT, which is ignored;
+  - any other shape is ignored, for example an NFT with its token id in the keys (keys of length 5 were seen on mainnet [V]).
 - A subscription covers only blocks after the head that Cairn read in the pass that handled its command.
 - **Never alerted:**
   - zero-amount transfers;
   - fee payments: the STRK `Transfer` from the sender to its block's `sequencer_address`, which is the last event of the transaction [V];
-  - transfers below the chat's `/min`.
+  - transfers below the chat's `/min`;
+  - tokens the chat muted.
+
+**Tokens outside the registry**
+- The registry lists the *verified* tokens: their symbols, decimals and Pragma pairs drive the default `/balance` list, the USD values and the "verified" status.
+- Any other contract is read the first time one of its events matters for a chat (a watched address, a whale threshold, a `/balance` or `/feed` argument):
+  - `symbol` is one felt for a short string, otherwise a ByteArray (§4.9);
+  - `decimals` must be from 0 to 36. Any other answer, or an error, means the contract is not a coin, and its events are ignored;
+  - the result is cached for 7 days of chain time.
+- **Display:**
+  - the symbol goes in `<code>`, escaped and cut to 11 characters, and is never a link. Text in code should not be auto-linked by Telegram clients [unverified];
+  - it is followed by the word "unverified" and the short contract address, linked to the explorer;
+  - so an airdropped fake "USDC" never passes for the real one;
+  - there is never a USD value for an unverified token.
 
 **Alerts**
 - One message per chat per transaction, in chain order. It lists each matching transfer with:
@@ -770,7 +807,7 @@ The publicnode endpoint serves spec 0.10.3 [S§7]. This is safe because the bot 
   - the direction: in or out, or "between" naming both addresses when both are watched;
   - the counterparty and the label;
   - the block time and a transaction link.
-- An `Approval` by a watched owner shows the spender and the amount, or "unlimited" for an amount of at least 2^128 − 1.
+- An `Approval` by a watched owner, on any token, shows the spender and the amount, or "unlimited" for an amount of at least 2^128 − 1.
 - **Delivery:**
   - The key is (chat, transaction hash, `event_index`).
   - An alert is saved before it is sent, and marked sent only after Telegram accepts it.
@@ -783,7 +820,7 @@ The publicnode endpoint serves spec 0.10.3 [S§7]. This is safe because the bot 
 - `tick` adds `"alerts"` and `"cursor"` to its line.
 
 **Criteria**
-- **Alert quality (counts double):** an alert says what moved, how much, between whom and where to check. There is no dust or fee noise, and a busy wallet does not bury the reader.
+- **Alert quality (counts double):** an alert says what moved, how much, between whom and where to check. There is no dust or fee noise. A token outside the registry is plainly marked unverified and can never pass for a known one. A busy wallet does not bury the reader.
 - **Delivery correctness:** no lost alerts and no duplicates, through restarts, kills, node outages and paging.
 - **Admin control and privacy:** group setup is obvious and members cannot change it; only what the brief allows is stored; `/export` is complete and `/forget` leaves nothing.
 - **Code quality:** round 1 is reused, not copied, and the scanner and ledger are ready for round 3's swap decoders.
@@ -806,8 +843,14 @@ The publicnode endpoint serves spec 0.10.3 [S§7]. This is safe because the bot 
 15. a chat that blocked or removed the bot gets nothing until it writes again or re-adds it, and other chats are unaffected
 16. a user's commands beyond 10 in 60 s of message dates get one slow-down notice and are then ignored
 17. no fixture user's name or username appears in any data file
+18. a transfer of a token outside the registry, in either layout, is alerted with the symbol and decimals read from its contract, marked unverified, with its contract linked
+19. a symbol holding HTML or a URL is escaped, shown in code and cut to 11 characters, and a contract without valid decimals (a legacy NFT) is never alerted
+20. an approval on a token outside the registry is alerted, and /whale and /min accept a token address
+21. /mute silences one token in the chat until /unmute, and /export lists it
+22. /balance with a token address shows that token's balance, and /balance of a watched address lists the tokens seen moving for it
+23. Transfer and Approval events are read with one chain-wide filter that names no address, following every page
 
-**How to run it:** on mainnet, `/watch` two addresses you control, move a little STRK between them and approve a spender. In a test group, set `/whale STRK 1000000`.
+**How to run it:** on mainnet, `/watch` two addresses you control, move a little STRK and a token outside the registry between them, and approve a spender. In a test group, set `/whale STRK 1000000`.
 - C1: read an hour of alerts as a busy holder would.
 - C2: `kill -9` the bot during a burst, restart it, and compare with the explorer.
 - C3: set up the group as an admin, try the same as a member, then run `/export` and `/forget` and inspect `CAIRN_DATA`.
@@ -823,22 +866,34 @@ The publicnode endpoint serves spec 0.10.3 [S§7]. This is safe because the bot 
 - Admin-only in groups. One feed per chat: a new `/feed` replaces the old one, and `/unfeed` stops it.
 - `<min>` is a token amount (`5000`) or a USD amount (`$100`). The default is 0.
 - `buys` (the default) posts buys; `all` also posts sells.
-- A token outside the registry is read from its contract: `symbol` (one felt is a short string, otherwise a ByteArray) and `decimals`.
+- A token outside the registry is read from its contract as in round 2 (symbol and decimals) and marked unverified.
+- The scanner adds one `starknet_getEvents` filter per venue: Ekubo Core with keys `[[Swapped]]`, and the AVNU exchange with keys `[[Swap]]`. The token's `Transfer` events already come from round 2's chain-wide filter.
 
 **The per-transaction rule (fixed)**
 - **With AVNU.** If the AVNU exchange emitted a `Swap` involving token T:
   - net(T) = Σ `buy_amount` where T is the `buy_token`, minus Σ `sell_amount` where T is the `sell_token`;
   - the paid (or received) tokens are the other side of those Swaps;
-  - the trader is the `beneficiary` of the last such Swap;
   - the venue is AVNU;
   - Ekubo events in that transaction are ignored.
 - **Without AVNU.** Over all Ekubo Core `Swapped` events in the transaction:
   - d(X) is the sum of the deltas for token X; a positive d means paid into the pool [V];
   - net(T) = −d(T);
   - the paid tokens are those with d > 0, and the received tokens are those other than T with d < 0;
-  - the trader is the transaction's `sender_address` (`starknet_getTransactionByHash`);
   - the venue is Ekubo.
 - **Result.** net > 0 is a buy; net < 0 is a sell, posted only with `all`; net = 0 (routed through, or a round trip) posts nothing.
+
+**The trader (fixed): from the token's flows, never from the transaction's sender**
+- **Why.**
+  - Relayers, keepers and paymasters often send a transaction for someone else. In a mainnet sample of 13 Oct 2026, the sender was not the trader in about 40% of Ekubo-only swaps [V]. Examples: keepers calling `execute_from_outside_v2` on behalf of an Argent account; an executor pulling tokens under an allowance; a sponsored relay.
+  - An AVNU `beneficiary` (or `taker`) can be a wrapper contract rather than the account that holds the tokens [V].
+  - The Ekubo `locker` is always a router [V].
+- **Rule.**
+  - Over the transaction's `Transfer` events of T, in both layouts, sum each address's net change in T.
+  - Leave out the fee payment, the zero address, and the venue contracts `ekubo_core` and `avnu_exchange`. Pass-through contracts such as routers and forwarders net to zero by themselves.
+  - For a buy, the trader is the address with the largest net gain. For a sell, it is the address with the largest net loss.
+  - A tie goes to the address that first appears by `event_index`.
+  - When no address qualifies (for example, T ends inside a contract), the post names no trader and carries no "new holder" flag.
+- No call to `starknet_getTransactionByHash` is needed.
 
 **The post**
 - side, the exact amount of T, and the amount or amounts paid;
@@ -874,20 +929,21 @@ USD comes from T's own `pragma_pair` if it has one, otherwise from the paid toke
 - **Code quality:** the decoders sit on round 2's scanner and ledger.
 
 **Checks**
-1. a direct Ekubo swap that pays the feed token out of the pool is posted as a buy, with the exact amount, the amount paid and the transaction sender as trader
-2. an AVNU route is posted once, from its Swap event, with its beneficiary, and the Ekubo hops in the same transaction are not posted again
-3. a multi-hop route through the feed token, and a round trip that nets to zero, post nothing
-4. sells are posted only with all, trades under a token or USD minimum are skipped, and a trade with no USD value is skipped under a USD minimum
-5. a trader whose balance was zero in the previous block is marked as a new holder
-6. a token outside the registry is read from its contract, whether its symbol is a short string or a ByteArray
-7. /price shows the median scaled by its own decimals, with its age and source count, flags a stale price, and says when a pair has no price
-8. posts and alerts show USD values from fresh prices only
-9. a .stark name is accepted wherever an address is, and an unknown name is refused with no subscription added
-10. an address is shown by its name only when that name resolves back to the same address
-11. without a contract in the network file, its feature says it is unavailable, and earlier replies are unchanged
-12. more than 3 messages due to one group in one pass become 2 messages and a summary
-13. a feed set up in a forum topic posts into that topic
-14. only administrators can set or stop a feed
+1. a direct Ekubo swap that pays the feed token out of the pool is posted as a buy, with the exact amount, the amount paid, and as trader the account whose balance of the token rose
+2. an AVNU route is posted once, from its Swap event, with the account that received the token as trader even when the beneficiary is a wrapper, and the Ekubo hops in the same transaction are not posted again
+3. a swap sent by a relayer for another account (execute_from_outside) credits that account, never the relayer, and a trade whose token ends inside a contract names no trader
+4. a multi-hop route through the feed token, and a round trip that nets to zero, post nothing
+5. sells are posted only with all, trades under a token or USD minimum are skipped, and a trade with no USD value is skipped under a USD minimum
+6. a trader whose balance was zero in the previous block is marked as a new holder
+7. a feed on a token outside the registry reuses round 2's contract reading, whether its symbol is a short string or a ByteArray, and its posts say unverified
+8. /price shows the median scaled by its own decimals, with its age and source count, flags a stale price, and says when a pair has no price
+9. posts and alerts show USD values from fresh prices only
+10. a .stark name is accepted wherever an address is, and an unknown name is refused with no subscription added
+11. an address is shown by its name only when that name resolves back to the same address
+12. without a contract in the network file, its feature says it is unavailable, and earlier replies are unchanged
+13. more than 3 messages due to one group in one pass become 2 messages and a summary
+14. a feed set up in a forum topic posts into that topic
+15. only administrators can set or stop a feed
 
 **How to run it:** in a mainnet test group, run `/feed STRK $100 all`. Ekubo logged 942 swaps in 500 blocks [S§5]. Then `/watch` a known `.stark` name and run `/price`.
 - C1: watch an hour of posts on a phone and on a desktop.
@@ -1127,7 +1183,7 @@ Both are on by default. In groups the bot must be an admin to see and delete mes
 | D7 | **Facts still unverified that checks depend on** | Settle each before its round: the Starknet ID trailing-`a` rule and vectors (R3); the reward token of BTC pools (R4); the anonymous-admin rule (R2); the BIP-39 wordlist licence (R5); Voyager link paths (R1, links only). All other layouts in §4.9 were verified today | high (that each needs a check) |
 | D8 | **Staking v3 / v0.15 lands mid-project.** The September 2026 target slipped, with no new date [S§1] | Round 4 pins the deployed entrypoints verified today, behind one adapter. If v3 deploys before round 4 opens, re-verify and amend the brief | high (that it slipped) |
 | D9 | **Feed coverage is partial:** only Ekubo and AVNU. AVNU accounts for 62% of transactions [L§1]; JediSwap, 10KSwap, Nostra, StarkDefi and a prop-AMM are missed [S§5] | Say "Ekubo and AVNU only" in `/help` and the README; add venues later (L08) | high |
-| D10 | **A buyer can be a contract.** In 10 of 15 sampled AVNU swaps, the taker and beneficiary was a contract driven by a bot account [V] | Show the beneficiary as the trader, as the rule defines. Judges assess how a contract trader reads | moderate |
+| D10 | **The trader is not the transaction's sender.** In 10 of 15 sampled AVNU swaps, the taker and beneficiary was a contract driven by a bot account [V]. On 13 Oct the sender was not the trader in about 40% of Ekubo-only swaps (relayers, keepers, paymasters) [V] | *Revised 13 Oct.* The trader is the address with the largest net change in the token over the transaction's `Transfer` events, leaving out the fee payment, the zero address and the venue contracts (round 3). Judges assess how a contract trader reads | moderate |
 | D11 | **Hosting a public instance.** An operator can link Telegram ids to wallets, and Telegram may disclose data on valid orders [L§3]. Vercel cannot host a long poller | Self-hosting is the main path. Hotpod may run one community mainnet instance on a small VM after round 2, with a privacy note and `/forget` | moderate |
 | D12 | **RPC capacity.** Public endpoints publish no limits; Blast and Lava are gone; ZAN's root serves 0.9 [S§7] | No default RPC. The README lists publicnode, Cartridge and ZAN `/rpc/v0_10`; a hosted instance uses a keyed provider plus publicnode in `STARKNET_RPC_URLS` | moderate |
 | D13 | **A buy feed reads as promotion or advice** | Neutral copy, admins opt in, no trending, rankings or buy buttons, and the disclaimer in `/help`. A hosted instance is never paid to feature a token | moderate |
@@ -1136,9 +1192,13 @@ Both are on by default. In groups the bot must be an admin to see and delete mes
 | D16 | **Starknet account-abstraction showcase** (signing links, multicall, paymaster) | A follow-up project, "Cairn Actions", after an independent review of round 5's winner, and only once the Wallet API and SNIP-29 shapes are verified and an in-browser check has been proven in the runner | moderate |
 | D17 | **Prices for BTC wrappers.** Pragma has no TBTC/USD or SOLVBTC/USD (zeros) [V] | No USD value for tBTC or SolvBTC. strkBTC uses BTC/USD, labelled as an assumed peg | moderate |
 | D18 | **Pilot audience** | Hotpod's own Starknet community group after round 2; the StarkWare Trading Guild [L§5] and two validator operators after round 4 | moderate |
-| D19 | **Judges' setup** | Each judge uses their own BotFather test bot, a throwaway group and the public mainnet RPC. This is safe because the bot is read-only | high |
+| D19 | **Judges' setup** | Each judge uses their own BotFather test bot, a throwaway group and the public mainnet RPC. This is safe because the bot is read-only. `rank_hours` is 48 (13 Oct) so a judge can run each entry for an hour; Hotpod's per-judge ranking window must be raised to match on the platform side | high |
 | D20 | **Licence** | MIT, matching unrug-tg-bot, Starky and StarknetFeed [L§1] | moderate |
 | D21 | **The research prototypes live only in this session's scratchpad** (the fake Bot API in `tg/verify/`, `tgprobe/` with `trap.mjs`, and `sn-research/rpc.py` with the keccak and selector helper) | Copy them into the creator's private folder now. The round-1 reference implementation is never published | high |
+| D22 | **Every token means spam tokens too.** Airdropped fakes ("USDC", URLs in the symbol) will reach watched wallets | Zero amounts are never alerted. Unverified tokens are labelled, their symbol is in code, cut to 11 characters and never a link, and they get no USD value. `/mute` per chat | moderate |
+| D23 | **Chain-wide filter load and provider support** | Measured 13 Oct: about 17 events per block, so 8,400 events and 9 pages in 2.1 s for 500 blocks on publicnode; Cartridge also serves it, with pages of at most 1024. Keep `chunk_size` at 1000 and `CAIRN_MAX_BLOCKS` at 500 | high (measured) |
+| D24 | **Reorgs deeper than `CAIRN_REORG_DEPTH`.** Both 0.14 incidents reverted accepted blocks: about 1 to 1.5 h on 2 Sep 2025 and 18 min on 5 Jan 2026 | Accepted as is (13 Oct decision): such reorgs are rare, and round 4 keeps its 64-block default | moderate |
+| D25 | **Other Starknet bots exist.** A live buy bot (@brotherelibuybot: Ekubo with AVNU and Fibrous routes, mcap, charts, GIFs; no licence declared), a staking monitor (StakeMate) and an older wallet tracker (StarkPulse). No whale bot, and Cielo, DeBank, Zerion and Whale Alert do not cover Starknet | Position Cairn as the open (MIT), self-hostable, read-only bot that watches every token and every wallet, rather than as "the only one" | high |
 
 **Verified for this spec on 12 Oct 2026 [V]:**
 - every selector in §4.9;
@@ -1150,3 +1210,8 @@ Both are on by default. In groups the bot must be an admin to see and delete mes
 - Starknet ID unknown-name and no-name results;
 - the staking, pool and attestation layouts and the epoch info;
 - the Sepolia naming address.
+
+**Verified on 13 Oct 2026 [V]** (review, `starknet-rpc.publicnode.com` 0.10.3 and Cartridge 0.10.2):
+- a chain-wide `getEvents` with keys `[[Transfer, Approval]]` and no address. Shapes and volume are in §4.9 and D23; publicnode accepts pages of 10,000, Cartridge 1,024;
+- the trader attribution sample: 20 Ekubo `Swapped` events in 17 transactions. The sender was not the trader in 6 of 15 Ekubo-only transactions, and one sponsored AVNU route named a wrapper as taker and beneficiary;
+- the fee rule on 21 more INVOKE v3 receipts; error codes 20, 21 and 40; Pragma STRK/USD (6 felts, 8 decimals, 11 sources).

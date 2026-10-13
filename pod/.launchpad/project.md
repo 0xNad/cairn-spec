@@ -4,12 +4,12 @@ payout: top3-60-25-15
 pick: creator-in-judging
 build_hours: 48
 reveal_hours: 12
-rank_hours: 12
+rank_hours: 48
 ---
 
 # Pitch
 
-Cairn is an open-source Telegram bot for Starknet that anyone can host. It answers balance and transaction lookups in chat, alerts you when a watched wallet moves funds or grants an approval, posts a project group's token buys and whale moves with USD values and .stark names, and warns everyone when the chain stalls or reorganises. It only reads the chain, over any JSON-RPC 0.10 node: it never holds a key, never signs, has no Mini App, and runs as one Node.js 24 process with no dependencies.
+Cairn is an open-source Telegram bot for Starknet that anyone can host. It answers balance and transaction lookups in chat, alerts you when a watched wallet moves any token on Starknet or grants an approval, posts a project group's token buys and whale moves with USD values and .stark names, and warns everyone when the chain stalls or reorganises. It only reads the chain, over any JSON-RPC 0.10 node: it never holds a key, never signs, has no Mini App, and runs as one Node.js 24 process with no dependencies.
 
 # Round 1: Lookups
 
@@ -114,25 +114,29 @@ API and a fake Starknet node on 127.0.0.1. Run them with `node .launchpad/checks
 - C3 (security posture): follow the token and the RPC URL through the code, then grep the logs and `CAIRN_DATA` for them.
 - C4 (code quality): read `cairn.mjs` and its imports, then imagine adding `/watch`.
 
-# Round 2: Wallet alerts
+# Round 2: Wallet alerts, every token
 
 prize: 9000000
 criteria:
-- Alert quality (counts double): an alert says what moved, how much, between whom and where to check; no dust or fee noise, and a busy wallet does not bury the reader
+- Alert quality (counts double): an alert says what moved, how much, between whom and where to check; no dust or fee noise; a token outside the registry is plainly marked unverified and can never pass for a known one; and a busy wallet does not bury the reader
 - Delivery correctness: no lost alerts and no duplicates, through restarts, kills, node outages and paging
 - Admin control and privacy: group setup is obvious and members cannot change it; only what the brief allows is stored; /export is complete and /forget leaves nothing
 - Code quality: round 1 reused, not copied, with a scanner and a ledger ready for round 3's swap decoders
 
-Cairn watches wallets for a chat and delivers every alert exactly once. Round 1's commands, formats and
-checks stay as they are.
+Cairn watches wallets for a chat across every token on Starknet, not only the registry, and delivers every
+alert exactly once. Round 1's commands, formats and checks stay as they are.
 
 **Commands.** `/watch <address> [label]` (a label of at most 32 characters, escaped), `/unwatch <address|label>`,
-and `/list` with a Remove button per subscription. `/whale <SYMBOL> <amount>` posts every transfer of that
-registry token at or above the amount, labelling mints and burns; `/unwhale <SYMBOL>` stops it.
-`/min <SYMBOL> <amount>` sets the chat's floor for watch alerts. `/track <hash>` posts once on L2 acceptance
+and `/list` with a Remove button per subscription. `/whale <SYMBOL|token address> <amount>` posts every
+transfer of that token at or above the amount, labelling mints and burns; `/unwhale <SYMBOL|token address>`
+stops it. `/min <SYMBOL|token address> <amount>` sets the chat's floor for watch alerts on that token.
+`/mute <token address>` silences one token in the chat (for spam airdrops) and `/unmute <token address>`
+undoes it. `/balance <address> [SYMBOL|token address]` gains an optional token, which may be any ERC-20; for an
+address watched in the chat, `/balance` also lists the non-zero balances of the tokens seen moving for it
+since the watch began. `/track <hash>` posts once on L2 acceptance
 (execution status and fee), then once on L1 acceptance or on a revert with its reason, and says "not found"
 after 600 s of chain time. `/export` replies with everything stored for the chat as JSON
-(`{"chat_id","watches","whales","minimums","tracks"}`), and `/forget` deletes it all. In a private chat, a
+(`{"chat_id","watches","whales","minimums","tracks","muted"}`), and `/forget` deletes it all. In a private chat, a
 pasted address gets the `/balance` reply with a Watch button, and a pasted hash the `/tx` reply with a Track
 button. In groups, everything but `/list` needs an administrator, anonymous ones included; a refusal says
 why. Caps: `CAIRN_MAX_WATCHES` (default 20) watches per chat, 5 whale thresholds, 10 tracks; a user's
@@ -140,17 +144,28 @@ commands beyond 10 in 60 s of `message.date` get one slow-down notice, then are 
 passes.
 
 **Scanning.** Each pass scans the blocks after the cursor, at most `CAIRN_MAX_BLOCKS` (default 500), with one
-`starknet_getEvents` filter per registry token for `Transfer` and `Approval`, following every
-`continuation_token`. Both event layouts are parsed, chosen by `keys.length` (modern: keys `[sel, from, to]`,
-data `[low, high]`; legacy: keys `[sel]`, data `[from, to, low, high]`). A subscription covers only the blocks
-after the head read in the pass that handled its command; the first start never backfills. Never alerted:
-zero-amount transfers (address poisoning), fee payments (the STRK `Transfer` from the sender to the block's
-`sequencer_address`, the last event of its transaction), and transfers under the chat's `/min`.
+chain-wide `starknet_getEvents` filter: keys `[[Transfer, Approval]]`, no address, `chunk_size` 1000 (some
+providers refuse more than 1024), following every `continuation_token`. Mainnet emits about 17 such events
+per block, so a pass at the default poll reads one page, and a 500-block catch-up about nine. Each event is
+decoded by its shape: keys `[sel, a, b]` with data `[low, high]` is a modern ERC-20 event; keys `[sel]` with
+data `[a, b, low, high]` is a legacy ERC-20 event when its contract answers `decimals`, and otherwise a legacy
+NFT, which is ignored; any other shape (such as an NFT with its token id in the keys) is ignored. A
+subscription covers only the blocks after the head read in the pass that handled its command; the first
+start never backfills. Never alerted: zero-amount transfers (address poisoning), fee payments (the STRK
+`Transfer` from the sender to the block's `sequencer_address`, the last event of its transaction), transfers
+under the chat's `/min`, and muted tokens.
+
+**Tokens outside the registry.** The registry lists the verified tokens. Any other contract is read the
+first time one of its events matters: `symbol` (a short string or a ByteArray) and `decimals` (0 to 36; any
+other answer, or none, means it is not a coin and its events are ignored), cached for 7 days of chain time.
+Such a token is shown as its symbol in `<code>` (escaped, at most 11 characters, never a link), followed by
+"unverified" and its short contract address linked to the explorer, so an airdropped fake "USDC" never
+passes for the real one.
 
 **Alerts.** One message per chat per transaction, in chain order, listing each matching transfer: token and
 exact amount, in, out or "between" (naming both addresses when both are watched), counterparty, label, block
-time and transaction link. An `Approval` by a watched owner shows the spender and the amount, or "unlimited"
-for at least 2^128 − 1. Delivery is keyed by (chat, transaction hash, `event_index`): saved before it is
+time and transaction link. An `Approval` by a watched owner, on any token, shows the spender and the amount,
+or "unlimited" for at least 2^128 − 1. Delivery is keyed by (chat, transaction hash, `event_index`): saved before it is
 sent, marked sent only once Telegram accepts it, so after a kill every alert arrives and none arrives twice.
 
 **Telegram.** `allowed_updates` adds `callback_query` and `my_chat_member`; the methods
@@ -162,7 +177,7 @@ on top of its winner.
 
 ## How to run it
 
-On mainnet, `/watch` two addresses you control, move a little STRK between them and approve a spender; in a test group, set `/whale STRK 1000000`.
+On mainnet, `/watch` two addresses you control, move a little STRK and a token outside the registry between them, and approve a spender; in a test group, set `/whale STRK 1000000`.
 
 - C1 (alert quality): read an hour of alerts as a busy holder would.
 - C2 (delivery correctness): `kill -9` the bot during a burst, restart it, and compare the alerts with the explorer.
@@ -184,13 +199,21 @@ stay as they are. The network file gains `contracts.ekubo_core`, `contracts.avnu
 feature off with a reply saying so, never an exit.
 
 **`/feed <SYMBOL|address> [<min>|$<usd>] [buys|all]`**, admin-only in groups, one feed per chat (`/unfeed`
-stops it). A token outside the registry is read from its contract (`symbol` as a short string or a
-ByteArray, and `decimals`). Per transaction: if the AVNU exchange emitted a `Swap` involving the token, net it
-over those Swaps, take the trader from the last Swap's `beneficiary`, and ignore Ekubo events in that
-transaction; otherwise sum the Ekubo Core `Swapped` deltas per token (a positive delta is paid into the pool)
-and take the trader from the transaction's `sender_address`. A positive net is a buy, a negative one a sell
-(posted only with `all`), zero posts nothing. A post shows the side, the exact amount, the amount paid, an
-approximate USD value, the trader (a verified name or the short address), "new holder" when the trader's
+stops it). A token outside the registry is read from its contract as in round 2, and marked unverified. The
+scanner adds one `starknet_getEvents` filter per venue: Ekubo Core's `Swapped` and the AVNU exchange's `Swap`.
+Per transaction: if the AVNU exchange emitted a `Swap` involving the token, net it over those Swaps and ignore
+Ekubo events in that transaction; otherwise sum the Ekubo Core `Swapped` deltas per token (a positive delta is
+paid into the pool). A positive net is a buy, a negative one a sell (posted only with `all`), zero posts
+nothing.
+
+**The trader** comes from the transaction's `Transfer` events of the token, never from its sender: relayers,
+keepers and paymasters often send a transaction for someone else (about 40% of Ekubo-only swaps in a mainnet
+sample of 13 Oct 2026), and an AVNU `beneficiary` can be a wrapper contract. Sum each address's net change in
+the token over those transfers, leaving out the fee payment, the zero address and the venue contracts
+(`ekubo_core`, `avnu_exchange`). For a buy the trader is the address with the largest net gain, for a sell
+the one with the largest net loss; a tie goes to the earliest `event_index`. When no address qualifies, the
+post names no trader and has no "new holder" flag. A post shows the side, the exact amount, the amount paid,
+an approximate USD value, the trader (a verified name or the short address), "new holder" when the trader's
 balance was 0 in the previous block, the venue, the time and a link.
 
 **`/price [SYMBOL…]`** reads Pragma's `get_data_median(SpotEntry(pair))`, scaled by the decimals it returns,
@@ -211,7 +234,7 @@ Round 3's checks are written once round 2 settles.
 In a mainnet test group, run `/feed STRK $100 all`, then `/watch` a known `.stark` name and run `/price`.
 
 - C1 (group fit): watch an hour of posts on a phone and on a desktop.
-- C2 (decoding accuracy): compare five posts with the explorer, including one aggregator route.
+- C2 (decoding accuracy): compare five posts with the explorer, including one aggregator route and one trade sent by a relayer or paymaster for another account.
 - C3 (names and prices): check `/price` against Pragma and the names against Starknet ID.
 - C4 (code quality): read how the decoders sit on the scanner, and imagine adding a third venue.
 
